@@ -1,0 +1,291 @@
+/**
+ * Panth Testimonials — Hyva CSS
+ * Loaded via default_hyva.xml
+ * Uses CSS custom properties for theming (from theme-config.json)
+ */
+
+/* =========================================================
+   CSS Variables (defaults from theme-config.json)
+   ========================================================= */
+:root {
+    --testimonials-primary: #0D9488;
+    --testimonials-star: #EAB308;
+    --testimonials-card-bg: #FFFFFF;
+    --testimonials-card-border: #E5E7EB;
+    --testimonials-text: #171717;
+    --testimonials-text-secondary: #525252;
+    --testimonials-quote-bg: #F0FDFA;
+}
+
+/* =========================================================
+   Card Component
+   ========================================================= */
+.pt-card {
+    background: var(--testimonials-card-bg);
+    border: 1px solid var(--testimonials-card-border);
+    border-radius: 12px;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.pt-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    border-color: #D1D5DB;
+}
+
+/* Grid spacing */
+.pt-listing .grid {
+    gap: 20px;
+}
+
+/* =========================================================
+   Listing Page
+   ========================================================= */
+.pt-listing a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Category pills scrollbar hide */
+.pt-listing .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+.pt-listing .scrollbar-hide {
+    scrollbar-width: none;
+}
+
+/* Line clamp support */
+.pt-listing .line-clamp-4,
+.pt-slider-hyva .line-clamp-4 {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* =========================================================
+   View Page
+   ========================================================= */
+.pt-view a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* =========================================================
+   Submit Form
+   ========================================================= */
+.pt-submit a {
+    text-decoration: none;
+}
+
+.pt-submit input:focus,
+.pt-submit textarea:focus {
+    border-color: var(--testimonials-primary);
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
+}
+
+.pt-submit input.border-red-500:focus,
+.pt-submit textarea.border-red-500:focus {
+    border-color: #EF4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Spin animation for submit loader */
+@keyframes pt-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.pt-submit .animate-spin {
+    animation: pt-spin 1s linear infinite;
+}
+
+/* =========================================================
+   Widget Slider
+   ========================================================= */
+.pt-slider-hyva {
+    position: relative;
+}
+
+.pt-slider-hyva .pt-card {
+    height: 100%;
+}
+
+/* =========================================================
+   Pagination
+   ========================================================= */
+.pt-listing .pt-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin: 32px 0 16px;
+}
+
+.pt-listing .pt-pagination a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 12px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 10px;
+    border: 1px solid var(--testimonials-card-border);
+    background: var(--testimonials-card-bg);
+    color: var(--testimonials-text-secondary);
+    text-decoration: none !important;
+    transition: all 0.2s;
+}
+
+.pt-listing .pt-pagination a:hover {
+    border-color: var(--testimonials-primary);
+    color: var(--testimonials-primary);
+    background: #F0FDFA;
+}
+
+.pt-listing .pt-pagination a.active {
+    background: var(--testimonials-primary);
+    border-color: var(--testimonials-primary);
+    color: #fff;
+}
+
+/* =========================================================
+   View Page — Enhanced
+   ========================================================= */
+.pt-view .pt-view-card {
+    background: var(--testimonials-card-bg);
+    border: 1px solid var(--testimonials-card-border);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.pt-view .pt-view-header {
+    background: linear-gradient(135deg, var(--testimonials-primary), #14B8A6);
+    padding: 32px 40px;
+}
+
+.pt-view .pt-view-header .flex {
+    gap: 20px;
+    color: #fff;
+}
+
+.pt-view .pt-view-body {
+    padding: 32px 40px;
+}
+
+.pt-view .pt-view-header .flex {
+    gap: 20px;
+}
+
+.pt-view .pt-view-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0D9488, #14B8A6);
+    color: #fff;
+    font-weight: 700;
+    font-size: 24px;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    flex-shrink: 0;
+}
+
+.pt-view .pt-category-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 14px;
+    background: #F0FDFA;
+    color: var(--testimonials-primary);
+    border: 1px solid rgba(13,148,136,0.2);
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none !important;
+}
+
+.pt-view .pt-category-badge:hover {
+    background: var(--testimonials-primary);
+    color: #fff;
+    border-color: var(--testimonials-primary);
+}
+
+/* =========================================================
+   Card Title in Listing
+   ========================================================= */
+.pt-card .pt-card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--testimonials-text);
+    margin: 0 0 8px;
+    line-height: 1.3;
+}
+
+/* =========================================================
+   Responsive: Mobile
+   ========================================================= */
+@media (max-width: 768px) {
+    .pt-listing .text-2xl,
+    .pt-slider-hyva .text-2xl {
+        font-size: 1.25rem;
+    }
+
+    .pt-view .p-10 {
+        padding: 1.5rem 1rem;
+    }
+
+    .pt-view .w-20 {
+        width: 3.5rem;
+    }
+
+    .pt-view .h-20 {
+        height: 3.5rem;
+    }
+
+    .pt-view .text-3xl {
+        font-size: 1.25rem;
+    }
+
+    .pt-submit .py-10 {
+        padding-top: 1.75rem;
+        padding-bottom: 1.75rem;
+    }
+
+    .pt-submit .p-8 {
+        padding: 1.25rem 1rem;
+    }
+
+    .pt-slider-hyva .w-10 {
+        width: 2rem;
+    }
+
+    .pt-slider-hyva .h-10 {
+        height: 2rem;
+    }
+}
+
+/* Modal mobile fix */
+@media (max-width: 640px) {
+    .pt-listing .fixed .bg-white {
+        max-height: 95vh;
+    }
+    .pt-listing .fixed .relative.text-white.text-center {
+        padding: 20px 16px;
+    }
+    .pt-listing .fixed .relative.text-white.text-center svg.mx-auto {
+        width: 28px;
+        height: 28px;
+        margin-bottom: 8px;
+    }
+    .pt-listing .fixed .relative.text-white.text-center h3 {
+        font-size: 16px;
+    }
+    .pt-listing .fixed .relative.text-white.text-center p {
+        font-size: 12px;
+    }
+}

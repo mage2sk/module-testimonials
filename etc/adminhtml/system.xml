@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <!-- Reuse Panth Extensions tab from Panth_Core -->
+        <section id="panth_testimonials" translate="label" sortOrder="30"
+                 showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Testimonials</label>
+            <tab>panth</tab>
+            <resource>Panth_Testimonials::configuration</resource>
+
+            <!-- General Settings -->
+            <group id="general" translate="label" sortOrder="10"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General Settings</label>
+
+                <field id="enabled" translate="label comment" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Module</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Enable or disable the Testimonials module</comment>
+                </field>
+
+                <field id="page_title" translate="label comment" type="text" sortOrder="20"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Page Title</label>
+                    <comment>Title displayed on the testimonials listing page</comment>
+                </field>
+
+                <field id="route" translate="label comment" type="text" sortOrder="30"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>URL Route</label>
+                    <comment>Base URL path for testimonials (e.g., "testimonials" creates /testimonials)</comment>
+                    <validate>validate-identifier</validate>
+                </field>
+
+                <field id="meta_description" translate="label comment" type="textarea" sortOrder="40"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Meta Description</label>
+                    <comment>Meta description for the testimonials listing page</comment>
+                </field>
+            </group>
+
+            <!-- Display Settings -->
+            <group id="display" translate="label" sortOrder="20"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Display Settings</label>
+
+                <field id="items_per_page" translate="label comment" type="text" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Items Per Page</label>
+                    <comment>Number of testimonials to display per page</comment>
+                    <validate>validate-digits</validate>
+                </field>
+            </group>
+
+            <!-- Submit Form Settings -->
+            <group id="submit" translate="label" sortOrder="30"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Submit Form Settings</label>
+
+                <field id="enabled" translate="label comment" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Submit Form</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Allow customers to submit testimonials from the frontend</comment>
+                </field>
+
+                <field id="require_approval" translate="label comment" type="select" sortOrder="20"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Require Approval</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>If enabled, submitted testimonials require admin approval before publishing</comment>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

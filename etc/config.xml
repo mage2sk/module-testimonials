@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <panth_testimonials>
+            <general>
+                <enabled>1</enabled>
+                <page_title>Customer Testimonials</page_title>
+                <meta_description></meta_description>
+                <route>testimonials</route>
+            </general>
+            <display>
+                <items_per_page>12</items_per_page>
+            </display>
+            <submit>
+                <enabled>1</enabled>
+                <require_approval>1</require_approval>
+            </submit>
+        </panth_testimonials>
+    </default>
+</config>

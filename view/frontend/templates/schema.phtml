@@ -1,0 +1,11 @@
+<?php
+/**
+ * Panth Testimonials — JSON-LD Schema
+ * @var $block \Panth\Testimonials\Block\Schema
+ */
+$schemaJson = $block->getSchemaJson();
+if (!$schemaJson) return;
+?>
+<script type="application/ld+json">
+<?= /* @noEscape */ $schemaJson ?>
+</script>

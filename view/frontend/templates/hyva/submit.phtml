@@ -1,0 +1,289 @@
+<?php
+/**
+ * Panth Testimonials — Submit Form Template (Hyva / Alpine.js)
+ *
+ * @var $block \Panth\Testimonials\Block\Submit
+ * @var $escaper \Magento\Framework\Escaper
+ */
+
+if (!$block->isEnabled()) {
+    return '';
+}
+
+$postUrl = $block->getSubmitPostUrl();
+?>
+
+<section class="pt-submit max-w-2xl mx-auto px-4 py-8"
+         x-data="{
+            form: {
+                customer_name: '',
+                customer_email: '',
+                customer_title: '',
+                customer_company: '',
+                title: '',
+                content: '',
+                rating: 0
+            },
+            hoverRating: 0,
+            errors: {},
+            submitting: false,
+            submitted: false,
+            toastMessage: '',
+            toastType: '',
+            showToast: false,
+            ratingLabels: ['', '<?= $escaper->escapeJs(__('Poor')) ?>', '<?= $escaper->escapeJs(__('Fair')) ?>', '<?= $escaper->escapeJs(__('Good')) ?>', '<?= $escaper->escapeJs(__('Very Good')) ?>', '<?= $escaper->escapeJs(__('Excellent')) ?>'],
+
+            validate() {
+                this.errors = {};
+                if (!this.form.customer_name.trim()) this.errors.customer_name = '<?= $escaper->escapeJs(__('Name is required.')) ?>';
+                if (!this.form.customer_email.trim()) {
+                    this.errors.customer_email = '<?= $escaper->escapeJs(__('Email is required.')) ?>';
+                } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.form.customer_email.trim())) {
+                    this.errors.customer_email = '<?= $escaper->escapeJs(__('Please enter a valid email.')) ?>';
+                }
+                if (!this.form.rating) this.errors.rating = '<?= $escaper->escapeJs(__('Please select a rating.')) ?>';
+                if (!this.form.title.trim()) this.errors.title = '<?= $escaper->escapeJs(__('Title is required.')) ?>';
+                if (!this.form.content.trim()) this.errors.content = '<?= $escaper->escapeJs(__('Testimonial content is required.')) ?>';
+                return Object.keys(this.errors).length === 0;
+            },
+
+            async submitForm() {
+                if (!this.validate()) return;
+                this.submitting = true;
+
+                const formData = new FormData();
+                formData.append('form_key', hyva.getFormKey());
+                Object.keys(this.form).forEach(key => {
+                    formData.append(key, this.form[key]);
+                });
+
+                try {
+                    const response = await fetch('<?= $escaper->escapeJs($postUrl) ?>', {
+                        method: 'POST',
+                        body: formData,
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    });
+
+                    if (response.ok) {
+                        let data;
+                        try {
+                            data = await response.json();
+                        } catch (e) {
+                            data = { success: true };
+                        }
+
+                        if (data.success !== false) {
+                            this.notify(data.message || '<?= $escaper->escapeJs(__('Thank you! Your testimonial has been submitted for review.')) ?>', 'success');
+                            this.resetForm();
+                        } else {
+                            this.notify(data.message || '<?= $escaper->escapeJs(__('Something went wrong. Please try again.')) ?>', 'error');
+                        }
+                    } else {
+                        this.notify('<?= $escaper->escapeJs(__('Submission failed. Please try again.')) ?>', 'error');
+                    }
+                } catch (e) {
+                    this.notify('<?= $escaper->escapeJs(__('Network error. Please check your connection.')) ?>', 'error');
+                } finally {
+                    this.submitting = false;
+                }
+            },
+
+            resetForm() {
+                this.form = { customer_name: '', customer_email: '', customer_title: '', customer_company: '', title: '', content: '', rating: 0 };
+                this.hoverRating = 0;
+                this.errors = {};
+            },
+
+            notify(message, type) {
+                this.toastMessage = message;
+                this.toastType = type;
+                this.showToast = true;
+                setTimeout(() => { this.showToast = false; }, 4000);
+            },
+
+            starColor(i) {
+                const active = this.hoverRating || this.form.rating;
+                return i <= active ? 'var(--testimonials-star, #EAB308)' : '#E5E7EB';
+            },
+
+            starLabel() {
+                const active = this.hoverRating || this.form.rating;
+                return this.ratingLabels[active] || '';
+            }
+         }">
+
+    <!-- Header -->
+    <div class="rounded-t-2xl text-center py-10 px-8"
+         style="background: linear-gradient(135deg, var(--color-primary, #0D9488), var(--color-primary-lighter, #14B8A6));">
+        <h1 class="text-2xl font-bold text-white m-0 mb-2"><?= $escaper->escapeHtml(__('Share Your Experience')) ?></h1>
+        <p class="text-sm text-white opacity-90 m-0"><?= $escaper->escapeHtml(__('We value your feedback. Tell us about your experience!')) ?></p>
+    </div>
+
+    <!-- Form Card -->
+    <div class="bg-white border border-gray-200 border-t-0 rounded-b-2xl p-8 sm:p-5">
+        <form @submit.prevent="submitForm()" novalidate>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+                <!-- Name -->
+                <div>
+                    <label for="pt-name" class="block text-sm font-semibold text-gray-700 mb-1.5">
+                        <?= $escaper->escapeHtml(__('Your Name')) ?> <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="pt-name" x-model="form.customer_name"
+                           :class="errors.customer_name && 'border-red-500'"
+                           class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-lg outline-none transition-all focus:border-[var(--color-primary,#0D9488)] focus:ring-2 focus:ring-[var(--color-primary,#0D9488)]/10"
+                           placeholder="<?= $escaper->escapeHtmlAttr(__('John Doe')) ?>"
+                           maxlength="255"/>
+                    <template x-if="errors.customer_name">
+                        <p class="text-xs text-red-500 mt-1 mb-0" x-text="errors.customer_name"></p>
+                    </template>
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label for="pt-email" class="block text-sm font-semibold text-gray-700 mb-1.5">
+                        <?= $escaper->escapeHtml(__('Email Address')) ?> <span class="text-red-500">*</span>
+                    </label>
+                    <input type="email" id="pt-email" x-model="form.customer_email"
+                           :class="errors.customer_email && 'border-red-500'"
+                           class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-lg outline-none transition-all focus:border-[var(--color-primary,#0D9488)] focus:ring-2 focus:ring-[var(--color-primary,#0D9488)]/10"
+                           placeholder="<?= $escaper->escapeHtmlAttr(__('john@example.com')) ?>"
+                           maxlength="255"/>
+                    <template x-if="errors.customer_email">
+                        <p class="text-xs text-red-500 mt-1 mb-0" x-text="errors.customer_email"></p>
+                    </template>
+                </div>
+
+                <!-- Title/Position -->
+                <div>
+                    <label for="pt-position" class="block text-sm font-semibold text-gray-700 mb-1.5">
+                        <?= $escaper->escapeHtml(__('Title / Position')) ?>
+                    </label>
+                    <input type="text" id="pt-position" x-model="form.customer_title"
+                           class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-lg outline-none transition-all focus:border-[var(--color-primary,#0D9488)] focus:ring-2 focus:ring-[var(--color-primary,#0D9488)]/10"
+                           placeholder="<?= $escaper->escapeHtmlAttr(__('CEO')) ?>"
+                           maxlength="255"/>
+                </div>
+
+                <!-- Company -->
+                <div>
+                    <label for="pt-company" class="block text-sm font-semibold text-gray-700 mb-1.5">
+                        <?= $escaper->escapeHtml(__('Company')) ?>
+                    </label>
+                    <input type="text" id="pt-company" x-model="form.customer_company"
+                           class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-lg outline-none transition-all focus:border-[var(--color-primary,#0D9488)] focus:ring-2 focus:ring-[var(--color-primary,#0D9488)]/10"
+                           placeholder="<?= $escaper->escapeHtmlAttr(__('Acme Corp')) ?>"
+                           maxlength="255"/>
+                </div>
+            </div>
+
+            <!-- Rating -->
+            <div class="mb-5">
+                <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                    <?= $escaper->escapeHtml(__('Your Rating')) ?> <span class="text-red-500">*</span>
+                </label>
+                <div class="flex items-center gap-1 mb-1" role="radiogroup" aria-label="<?= $escaper->escapeHtmlAttr(__('Rating')) ?>">
+                    <template x-for="i in 5" :key="i">
+                        <button type="button"
+                                class="p-0.5 bg-transparent border-0 cursor-pointer transition-transform hover:scale-110 flex items-center"
+                                @click="form.rating = i"
+                                @mouseenter="hoverRating = i"
+                                @mouseleave="hoverRating = 0"
+                                :aria-label="i + ' star'"
+                                role="radio"
+                                :aria-checked="form.rating >= i">
+                            <svg width="28" height="28" viewBox="0 0 24 24" :fill="starColor(i)" :stroke="starColor(i)" stroke-width="1.5">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </button>
+                    </template>
+                    <span class="text-sm text-gray-500 ml-2" x-text="starLabel()"></span>
+                </div>
+                <template x-if="errors.rating">
+                    <p class="text-xs text-red-500 mt-1 mb-0" x-text="errors.rating"></p>
+                </template>
+            </div>
+
+            <!-- Testimonial Title -->
+            <div class="mb-5">
+                <label for="pt-title" class="block text-sm font-semibold text-gray-700 mb-1.5">
+                    <?= $escaper->escapeHtml(__('Testimonial Title')) ?> <span class="text-red-500">*</span>
+                </label>
+                <input type="text" id="pt-title" x-model="form.title"
+                       :class="errors.title && 'border-red-500'"
+                       class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-lg outline-none transition-all focus:border-[var(--color-primary,#0D9488)] focus:ring-2 focus:ring-[var(--color-primary,#0D9488)]/10"
+                       placeholder="<?= $escaper->escapeHtmlAttr(__('Great service and products!')) ?>"
+                       maxlength="255"/>
+                <template x-if="errors.title">
+                    <p class="text-xs text-red-500 mt-1 mb-0" x-text="errors.title"></p>
+                </template>
+            </div>
+
+            <!-- Content -->
+            <div class="mb-5">
+                <label for="pt-content" class="block text-sm font-semibold text-gray-700 mb-1.5">
+                    <?= $escaper->escapeHtml(__('Your Testimonial')) ?> <span class="text-red-500">*</span>
+                </label>
+                <textarea id="pt-content" x-model="form.content" rows="5"
+                          :class="errors.content && 'border-red-500'"
+                          class="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-lg outline-none transition-all resize-y min-h-[120px] focus:border-[var(--color-primary,#0D9488)] focus:ring-2 focus:ring-[var(--color-primary,#0D9488)]/10"
+                          placeholder="<?= $escaper->escapeHtmlAttr(__('Tell us about your experience...')) ?>"
+                          maxlength="5000"></textarea>
+                <template x-if="errors.content">
+                    <p class="text-xs text-red-500 mt-1 mb-0" x-text="errors.content"></p>
+                </template>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="mt-6 text-center">
+                <button type="submit"
+                        :disabled="submitting"
+                        class="inline-flex items-center justify-center gap-2 px-10 py-3.5 text-base font-semibold text-white border-0 rounded-xl cursor-pointer transition-colors min-w-[200px] disabled:opacity-60 disabled:cursor-not-allowed"
+                        style="background-color: var(--color-primary, #0D9488);"
+                        @mouseenter="!submitting && ($el.style.backgroundColor='var(--color-primary-darker, #0F766E)')"
+                        @mouseleave="$el.style.backgroundColor='var(--color-primary, #0D9488)'">
+                    <template x-if="!submitting">
+                        <span><?= $escaper->escapeHtml(__('Submit Testimonial')) ?></span>
+                    </template>
+                    <template x-if="submitting">
+                        <svg class="animate-spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                        </svg>
+                    </template>
+                </button>
+            </div>
+        </form>
+
+        <!-- Trust Badges -->
+        <div class="flex items-center justify-center gap-6 mt-6 pt-5 border-t border-gray-100 flex-wrap">
+            <div class="flex items-center gap-1.5 text-xs text-gray-500">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary, #0D9488)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span><?= $escaper->escapeHtml(__('Secure & Private')) ?></span>
+            </div>
+            <div class="flex items-center gap-1.5 text-xs text-gray-500">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary, #0D9488)" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+                <span><?= $escaper->escapeHtml(__('Reviewed by our team')) ?></span>
+            </div>
+            <div class="flex items-center gap-1.5 text-xs text-gray-500">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary, #0D9488)" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <span><?= $escaper->escapeHtml(__('100% Authentic Reviews')) ?></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div x-show="showToast"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 translate-y-4"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 translate-y-0"
+         x-transition:leave-end="opacity-0 translate-y-4"
+         class="fixed bottom-6 left-1/2 -translate-x-1/2 px-7 py-3.5 rounded-xl text-sm font-medium text-white z-50 shadow-lg"
+         :class="toastType === 'success' ? 'bg-emerald-600' : 'bg-red-600'"
+         x-text="toastMessage"
+         role="alert"
+         aria-live="polite"
+         style="display: none;">
+    </div>
+</section>

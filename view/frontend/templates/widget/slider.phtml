@@ -1,0 +1,131 @@
+<?php
+/**
+ * Panth Testimonials Widget — Luma Swiper Slider
+ * @var $block \Panth\Testimonials\Block\Widget\TestimonialSlider
+ * @var $escaper \Magento\Framework\Escaper
+ */
+$testimonials = $block->getTestimonials();
+if (!$testimonials || $testimonials->getSize() == 0) return;
+
+$config = $block->getSliderConfig();
+$sliderId = $block->getSliderId();
+$title = $escaper->escapeHtml($config['title'] ?? __('What Our Customers Say'));
+$showRating = $config['show_rating'] ?? true;
+$showCompany = $config['show_company'] ?? true;
+$showImage = $config['show_image'] ?? true;
+$autoplay = !empty($config['autoplay']);
+$autoplayInterval = (int)($config['autoplay_interval'] ?? 5000);
+$colDesktop = (int)($config['columns_desktop'] ?? 3);
+$colTablet = (int)($config['columns_tablet'] ?? 2);
+$colMobile = (int)($config['columns_mobile'] ?? 1);
+?>
+
+<style>
+.panth-testimonial-slider { margin: 32px 0 48px; font-family: 'DM Sans', 'Inter', system-ui, sans-serif; position: relative; background: none !important; background-color: transparent !important; }
+.panth-testimonial-slider .slider-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.panth-testimonial-slider .slider-title { font-size: 24px; font-weight: 700; color: #171717; margin: 0; }
+.panth-testimonial-slider .slider-nav { display: flex; gap: 8px; }
+.panth-testimonial-slider .slider-nav button { width: 40px; height: 40px; border-radius: 50%; border: 1px solid #E5E7EB; background: #fff; color: #374151; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; transition: all 0.2s; }
+.panth-testimonial-slider .slider-nav button:hover { border-color: var(--color-primary, #0D9488); color: var(--color-primary, #0D9488); background: #F0FDFA; }
+.panth-testimonial-slider .slider-nav button.swiper-button-disabled { opacity: 0.3; cursor: default; }
+.panth-testimonial-slider .slider-nav button svg { width: 18px; height: 18px; }
+.panth-testimonial-slider .swiper { overflow: hidden; padding-bottom: 60px; margin-bottom: -20px; }
+.panth-testimonial-slider .swiper-slide { height: auto; }
+.panth-testimonial-slider .tcard { border: 1px solid #E5E7EB; border-radius: 16px; padding: 28px; background: #fff; height: 100%; display: flex; flex-direction: column; transition: box-shadow 0.2s, border-color 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+.panth-testimonial-slider .tcard:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-color: #D1D5DB; }
+.panth-testimonial-slider .tcard-stars { display: flex; gap: 1px; margin-bottom: 14px; }
+.panth-testimonial-slider .tcard-stars svg { width: 16px; height: 16px; }
+.panth-testimonial-slider .tcard-stars .filled { color: #EAB308; }
+.panth-testimonial-slider .tcard-stars .empty { color: #E5E7EB; }
+.panth-testimonial-slider .tcard-title { font-size: 15px; font-weight: 700; color: #171717; margin: 0 0 8px; line-height: 1.3; }
+.panth-testimonial-slider .tcard-quote { font-size: 14px; line-height: 1.7; color: #525252; margin: 0 0 20px; flex: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.panth-testimonial-slider .tcard-author { display: flex; align-items: center; gap: 12px; margin-top: auto; padding-top: 16px; border-top: 1px solid #F3F4F6; }
+.panth-testimonial-slider .tcard-avatar { width: 44px; height: 44px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: linear-gradient(135deg, var(--color-primary, #0D9488), var(--color-primary-lighter, #14B8A6)); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 16px; }
+.panth-testimonial-slider .tcard-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.panth-testimonial-slider .tcard-name { font-size: 15px; font-weight: 600; color: #171717; margin: 0; }
+.panth-testimonial-slider .tcard-role { font-size: 12px; color: #A3A3A3; margin: 2px 0 0; }
+.panth-testimonial-slider .slider-pagination { margin-top: 32px; text-align: center; display: flex; justify-content: center; gap: 6px; position: relative; z-index: 2; }
+.panth-testimonial-slider .slider-pagination .swiper-pagination-bullet { width: 8px; height: 8px; background: #D1D5DB; opacity: 1; border-radius: 50%; display: inline-block; cursor: pointer; transition: all 0.2s; }
+.panth-testimonial-slider .slider-pagination .swiper-pagination-bullet-active { background: var(--color-primary, #0D9488); width: 24px; border-radius: 4px; }
+@media (max-width: 767px) {
+    .panth-testimonial-slider .slider-title { font-size: 18px; }
+    .panth-testimonial-slider .slider-nav button { width: 32px; height: 32px; }
+    .panth-testimonial-slider .tcard { padding: 16px; }
+}
+</style>
+
+<section class="panth-testimonial-slider" id="<?= $escaper->escapeHtmlAttr($sliderId) ?>">
+    <div class="slider-header">
+        <h3 class="slider-title"><?= /* @noEscape */ $title ?></h3>
+        <div class="slider-nav">
+            <button type="button" id="<?= $escaper->escapeHtmlAttr($sliderId) ?>-prev" aria-label="<?= $escaper->escapeHtmlAttr(__('Previous')) ?>">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <button type="button" id="<?= $escaper->escapeHtmlAttr($sliderId) ?>-next" aria-label="<?= $escaper->escapeHtmlAttr(__('Next')) ?>">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="swiper" id="<?= $escaper->escapeHtmlAttr($sliderId) ?>-swiper">
+        <div class="swiper-wrapper">
+            <?php foreach ($testimonials as $t): ?>
+            <div class="swiper-slide">
+                <div class="tcard">
+                    <?php if ($showRating): ?>
+                    <div class="tcard-stars">
+                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                        <svg class="<?= $i <= (int)$t->getRating() ? 'filled' : 'empty' ?>" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <?php endfor; ?>
+                    </div>
+                    <?php endif; ?>
+
+                    <h4 class="tcard-title"><?= $escaper->escapeHtml($t->getTitle()) ?></h4>
+                    <p class="tcard-quote"><span style="color:var(--color-primary, #0D9488);font-size:18px;font-weight:700;line-height:1;margin-right:2px;">&ldquo;</span><?= $escaper->escapeHtml($t->getShortContent() ?: mb_substr(strip_tags($t->getContent()), 0, 150)) ?></p>
+
+                    <div class="tcard-author">
+                        <?php if ($showImage): ?>
+                        <div class="tcard-avatar">
+                            <?php if ($t->getCustomerImage()): ?>
+                                <img src="<?= $escaper->escapeUrl($block->getUrl('pub/media/' . $t->getCustomerImage())) ?>" alt="<?= $escaper->escapeHtmlAttr($t->getCustomerName()) ?>" loading="lazy" />
+                            <?php else: ?>
+                                <?= $escaper->escapeHtml(mb_strtoupper(mb_substr($t->getCustomerName(), 0, 1) . mb_substr(strstr($t->getCustomerName(), ' ') ?: '', 1, 1))) ?>
+                            <?php endif; ?>
+                        </div>
+                        <?php endif; ?>
+                        <div>
+                            <p class="tcard-name"><?= $escaper->escapeHtml($t->getCustomerName()) ?></p>
+                            <?php if ($showCompany && ($t->getCustomerTitle() || $t->getCustomerCompany())): ?>
+                            <p class="tcard-role"><?= $escaper->escapeHtml(implode(', ', array_filter([$t->getCustomerTitle(), $t->getCustomerCompany()]))) ?></p>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+
+    <div class="slider-pagination" id="<?= $escaper->escapeHtmlAttr($sliderId) ?>-pagination"></div>
+</section>
+
+<script>
+function initTestimonialSlider() {
+    var id = '<?= /* @noEscape */ $sliderId ?>';
+    if (typeof Swiper === 'undefined') {
+        setTimeout(initTestimonialSlider, 200);
+        return;
+    }
+    new Swiper('#' + id + '-swiper', {
+        slidesPerView: <?= (int) $colMobile ?>,
+        spaceBetween: 16,
+        <?php if ($autoplay): ?>
+        autoplay: { delay: <?= (int) $autoplayInterval ?>, disableOnInteraction: false, pauseOnMouseEnter: true },
+        <?php endif; ?>
+        navigation: { nextEl: '#' + id + '-next', prevEl: '#' + id + '-prev' },
+        pagination: { el: '#' + id + '-pagination', clickable: true },
+        breakpoints: { 768: { slidesPerView: <?= (int) $colTablet ?>, spaceBetween: 16 }, 1024: { slidesPerView: <?= (int) $colDesktop ?>, spaceBetween: 20 } }
+    });
+}
+document.addEventListener('DOMContentLoaded', initTestimonialSlider);
+</script>

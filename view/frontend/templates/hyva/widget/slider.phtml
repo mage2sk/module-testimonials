@@ -1,0 +1,159 @@
+<?php
+/**
+ * Panth Testimonials Widget — Hyva (snap-slider)
+ * @var $block \Panth\Testimonials\Block\Widget\TestimonialSlider
+ * @var $escaper \Magento\Framework\Escaper
+ */
+$testimonials = $block->getTestimonials();
+if (!$testimonials || $testimonials->getSize() == 0) return;
+
+$config = $block->getSliderConfig();
+$sliderId = $block->getSliderId();
+$title = $escaper->escapeHtml($config['title'] ?? __('What Our Customers Say'));
+$showRating = $config['show_rating'] ?? true;
+$showCompany = $config['show_company'] ?? true;
+$showImage = $config['show_image'] ?? true;
+$autoplay = !empty($config['autoplay']);
+$autoplayInterval = (int)($config['autoplay_interval'] ?? 5000);
+$testimonialItems = [];
+foreach ($testimonials as $t) {
+    $testimonialItems[] = $t;
+}
+$totalItems = count($testimonialItems);
+?>
+
+<section
+    id="<?= $escaper->escapeHtmlAttr($sliderId) ?>"
+    class="snap-slider my-4"
+    aria-label="<?= $escaper->escapeHtmlAttr($title) ?>"
+    x-data
+    x-snap-slider.group-pager
+    x-defer="intersect"
+>
+    <div class="flex gap-2 justify-between items-center mb-2">
+        <h3 class="text-2xl font-bold text-gray-900 m-0"><?= /* @noEscape */ $title ?></h3>
+        <div class="flex gap-2">
+            <button class="btn btn-secondary p-2 invisible" aria-label="<?= $escaper->escapeHtmlAttr(__('Previous')) ?>" data-prev disabled>
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <button class="btn btn-secondary p-2 invisible" aria-label="<?= $escaper->escapeHtmlAttr(__('Next')) ?>" data-next disabled>
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="snap-track sm:[--snap-cols:2] lg:[--snap-cols:3] p-1 -m-1"
+         data-track tabindex="0" aria-live="polite">
+        <?php foreach ($testimonialItems as $index => $t): ?>
+            <?php
+            $rating = (int)$t->getRating();
+            $nameParts = explode(' ', $t->getCustomerName());
+            $initials = strtoupper(substr($nameParts[0], 0, 1) . (isset($nameParts[1]) ? substr($nameParts[1], 0, 1) : ''));
+            $meta = array_filter([$t->getCustomerTitle(), $t->getCustomerCompany()]);
+            ?>
+            <div id="<?= $escaper->escapeHtmlAttr($sliderId . '-' . $t->getId()) ?>"
+                 class="flex flex-col border border-gray-200 rounded-2xl p-6 bg-white transition-shadow hover:shadow-lg">
+
+                <?php if ($showRating && $rating > 0): ?>
+                <div class="flex mb-3" style="gap:1px;">
+                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                    <span style="color:<?= $i <= $rating ? '#EAB308' : '#E5E7EB' ?>;font-size:16px;line-height:1;">&#9733;</span>
+                    <?php endfor; ?>
+                </div>
+                <?php endif; ?>
+
+                <h4 class="text-base font-bold text-gray-900 m-0 mb-2 leading-snug"><?= $escaper->escapeHtml($t->getTitle()) ?></h4>
+
+                <p class="text-sm leading-relaxed text-gray-500 mb-5 flex-1 m-0 line-clamp-3">
+                    <span class="text-lg font-bold leading-none mr-0.5" style="color:var(--color-primary, #0D9488);">&ldquo;</span><?= $escaper->escapeHtml($t->getShortContent() ?: mb_substr(strip_tags($t->getContent()), 0, 150)) ?>
+                </p>
+
+                <div class="flex items-center gap-3 mt-auto pt-4 border-t border-gray-100">
+                    <?php if ($showImage): ?>
+                    <div class="w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold text-white"
+                         style="background:linear-gradient(135deg,var(--color-primary, #0D9488),var(--color-primary-lighter, #14B8A6));">
+                        <?= $escaper->escapeHtml($initials) ?>
+                    </div>
+                    <?php endif; ?>
+                    <div class="min-w-0">
+                        <p class="text-sm font-semibold text-gray-900 m-0 truncate"><?= $escaper->escapeHtml($t->getCustomerName()) ?></p>
+                        <?php if ($showCompany && !empty($meta)): ?>
+                        <p class="text-xs text-gray-400 m-0 truncate"><?= $escaper->escapeHtml(implode(', ', $meta)) ?></p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+
+    <?php if ($totalItems > 3): ?>
+    <div class="flex justify-center items-center gap-3 py-2"
+         x-data="testimonialPager_<?= $escaper->escapeHtmlAttr(preg_replace('/[^a-zA-Z0-9]/', '_', $sliderId)) ?>()"
+         x-init="init()">
+        <?php
+        $visibleCols = 3;
+        $totalPages = (int)ceil($totalItems / $visibleCols);
+        for ($p = 0; $p < $totalPages; $p++): ?>
+        <button type="button"
+                class="h-4 rounded-full border transition-all duration-300"
+                :class="activePage === <?= (int) $p ?>
+                    ? 'w-7 border-transparent'
+                    : 'w-4 border-slate-600'"
+                :style="activePage === <?= (int) $p ?> ? 'background-color:var(--color-primary, #0D9488)' : ''"
+                @click="goToPage(<?= (int) $p ?>)"
+                aria-label="<?= $escaper->escapeHtmlAttr(__('Page %1', $p + 1)) ?>">
+        </button>
+        <?php endfor; ?>
+    </div>
+    <script>
+        function testimonialPager_<?= $escaper->escapeJs(preg_replace('/[^a-zA-Z0-9]/', '_', $sliderId)) ?>() {
+            return {
+                activePage: 0,
+                track: null,
+                init() {
+                    const section = this.$el.closest('.snap-slider');
+                    this.track = section ? section.querySelector('[data-track]') : null;
+                    if (!this.track) return;
+                    this.track.addEventListener('scroll', () => this.updateActive());
+                    setTimeout(() => this.updateActive(), 100);
+                    <?php if ($autoplay): ?>
+                    let interval;
+                    const startAutoplay = () => {
+                        interval = setInterval(() => {
+                            const slides = this.track.children;
+                            const slideWidth = slides[0] ? slides[0].offsetWidth + parseInt(getComputedStyle(this.track).gap || 0) : 0;
+                            if (this.track.scrollLeft + this.track.offsetWidth >= this.track.scrollWidth - 10) {
+                                this.track.scrollTo({ left: 0, behavior: 'smooth' });
+                            } else {
+                                this.track.scrollBy({ left: slideWidth, behavior: 'smooth' });
+                            }
+                        }, <?= (int) $autoplayInterval ?>);
+                    };
+                    startAutoplay();
+                    section.addEventListener('mouseenter', () => clearInterval(interval));
+                    section.addEventListener('mouseleave', startAutoplay);
+                    <?php endif; ?>
+                },
+                updateActive() {
+                    if (!this.track) return;
+                    const slides = this.track.children;
+                    if (!slides.length) return;
+                    const slideWidth = slides[0].offsetWidth + parseInt(getComputedStyle(this.track).gap || 0);
+                    const cols = Math.round(this.track.offsetWidth / slides[0].offsetWidth);
+                    this.activePage = Math.round(this.track.scrollLeft / (slideWidth * cols));
+                },
+                goToPage(page) {
+                    if (!this.track) return;
+                    const slides = this.track.children;
+                    if (!slides.length) return;
+                    const slideWidth = slides[0].offsetWidth + parseInt(getComputedStyle(this.track).gap || 0);
+                    const cols = Math.round(this.track.offsetWidth / slides[0].offsetWidth);
+                    this.track.scrollTo({ left: page * slideWidth * cols, behavior: 'smooth' });
+                }
+            };
+        }
+    </script>
+    <?php endif; ?>
+
+    <span id="<?= $escaper->escapeHtmlAttr($sliderId) ?>-end" tabindex="-1"></span>
+</section>

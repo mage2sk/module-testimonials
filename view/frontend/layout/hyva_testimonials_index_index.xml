@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Panth Testimonials — Listing Page (Hyva)
+ * Switches listing to Alpine.js template
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="testimonials.listing"
+                        template="Panth_Testimonials::hyva/listing.phtml"/>
+    </body>
+</page>

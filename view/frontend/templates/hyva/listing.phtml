@@ -1,0 +1,471 @@
+<?php
+/**
+ * Panth Testimonials — Listing Template (Hyva / Alpine.js)
+ *
+ * @var $block \Panth\Testimonials\Block\Testimonials
+ * @var $escaper \Magento\Framework\Escaper
+ */
+
+$testimonials = $block->getTestimonials();
+$categories = $block->getCategories();
+$selectedCategory = $block->getSelectedCategory();
+$isSubmitEnabled = $block->isSubmitEnabled();
+$submitUrl = $block->getSubmitUrl();
+?>
+
+<section class="pt-listing container mx-auto px-4 py-8"
+         id="panth-testimonials-listing"
+         x-data="{
+            selectedCategory: '<?= $escaper->escapeJs($selectedCategory ?: '') ?>',
+            showSubmitModal: false,
+            submitForm: { name: '', email: '', title: '', company: '', rating: 5, testimonialTitle: '', content: '' },
+            submitting: false,
+            submitSuccess: false,
+            submitError: '',
+            hoverRating: 0,
+            setRating(r) { this.submitForm.rating = r; },
+            async submitTestimonial() {
+                this.submitError = '';
+                if (!this.submitForm.name || !this.submitForm.email || !this.submitForm.testimonialTitle || !this.submitForm.content) {
+                    this.submitError = 'Please fill in all required fields.';
+                    return;
+                }
+                this.submitting = true;
+                try {
+                    const fd = new FormData();
+                    fd.append('customer_name', this.submitForm.name);
+                    fd.append('customer_email', this.submitForm.email);
+                    fd.append('customer_title', this.submitForm.title);
+                    fd.append('customer_company', this.submitForm.company);
+                    fd.append('rating', this.submitForm.rating);
+                    fd.append('title', this.submitForm.testimonialTitle);
+                    fd.append('content', this.submitForm.content);
+                    fd.append('form_key', hyva.getFormKey());
+                    const r = await fetch('<?= $escaper->escapeJs($block->getUrl('testimonials/submit/save')) ?>', { method: 'POST', body: fd });
+                    if (r.ok || r.redirected) {
+                        this.submitSuccess = true;
+                        setTimeout(() => { this.showSubmitModal = false; this.submitSuccess = false; location.reload(); }, 2500);
+                    } else { this.submitError = 'Submission failed. Please try again.'; }
+                } catch(e) { this.submitError = 'An error occurred. Please try again.'; }
+                finally { this.submitting = false; }
+            }
+         }"
+         @keydown.escape.window="showSubmitModal = false">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+        <h1 class="text-2xl font-bold text-gray-900 m-0">
+            <?= $escaper->escapeHtml(__('Customer Testimonials')) ?>
+        </h1>
+        <?php if ($isSubmitEnabled): ?>
+            <button type="button"
+               @click="showSubmitModal = true"
+               class="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold text-white rounded-lg transition-colors cursor-pointer border-0"
+               style="background-color: var(--color-primary, #0D9488);"
+               @mouseenter="$el.style.backgroundColor='var(--color-primary-darker, #0F766E)'"
+               @mouseleave="$el.style.backgroundColor='var(--color-primary, #0D9488)'">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                <?= $escaper->escapeHtml(__('Submit Testimonial')) ?>
+            </button>
+        <?php endif; ?>
+    </div>
+
+    <!-- Category Filter Pills -->
+    <?php if ($categories->getSize() > 0): ?>
+        <style>
+            .panth-testimonials-tabs-wrap{
+                margin: 20px 0 28px 0 !important;
+                padding: 0 !important;
+                overflow: visible !important;
+                width: 100% !important;
+                min-width: 0 !important;
+            }
+            .panth-testimonials-tabs-scroll{
+                display: block !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                min-width: 0 !important;
+                overflow-x: auto !important;
+                overflow-y: hidden !important;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: thin;
+                scrollbar-color: #cbd5e1 transparent;
+                -webkit-mask-image: linear-gradient(to right, black calc(100% - 32px), transparent);
+                        mask-image: linear-gradient(to right, black calc(100% - 32px), transparent);
+                position: relative;
+                padding: 8px 0 10px 0 !important;
+                margin: 0 !important;
+            }
+            .panth-testimonials-tabs-scroll::-webkit-scrollbar{
+                height: 8px;
+                -webkit-appearance: none;
+            }
+            .panth-testimonials-tabs-scroll::-webkit-scrollbar-track{
+                background: rgba(203, 213, 225, 0.15);
+                border-radius: 999px;
+            }
+            .panth-testimonials-tabs-scroll::-webkit-scrollbar-thumb{
+                background: #cbd5e1;
+                border-radius: 999px;
+                border: 1px solid transparent;
+            }
+            .panth-testimonials-tabs-scroll::-webkit-scrollbar-thumb:hover{ background: #94a3b8; }
+            .panth-testimonials-tabs{
+                display: inline-flex !important;
+                flex-wrap: nowrap !important;
+                align-items: center !important;
+                gap: 10px !important;
+                padding: 4px 0 4px 0 !important;
+                margin: 0 !important;
+                white-space: nowrap;
+                line-height: 1 !important;
+                /* width:max-content forces the nav to grow beyond parent
+                   so overflow-x:auto on the wrapper actually triggers. */
+                width: max-content !important;
+                min-width: 100% !important;
+            }
+            .panth-testimonials-tabs > *{
+                flex: 0 0 auto !important;
+                flex-shrink: 0 !important;
+                white-space: nowrap;
+                margin: 0 !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                height: 36px !important;
+                padding: 0 18px !important;
+                line-height: 1 !important;
+                border-radius: 999px !important;
+                box-sizing: border-box !important;
+            }
+        </style>
+        <div class="panth-testimonials-tabs-wrap">
+        <div class="panth-testimonials-tabs-scroll">
+            <nav class="panth-testimonials-tabs">
+                <a href="<?= $escaper->escapeUrl($block->getUrl('testimonials')) ?>"
+                   class="pt-category-pill flex-shrink-0 px-4 py-2 text-sm font-medium whitespace-nowrap rounded-full border transition-all cursor-pointer
+                          <?= !$selectedCategory ? 'text-white' : 'text-gray-600 bg-gray-50 border-gray-200 hover:border-[var(--color-primary,#0D9488)] hover:text-[var(--color-primary,#0D9488)]' ?>"
+                   <?php if (!$selectedCategory): ?>
+                       style="background-color: var(--color-primary, #0D9488); border-color: var(--color-primary, #0D9488); color: #fff;"
+                   <?php endif; ?>>
+                    <?= $escaper->escapeHtml(__('All')) ?>
+                </a>
+                <?php foreach ($categories as $category): ?>
+                    <a href="<?= $escaper->escapeUrl($block->getCategoryUrl($category)) ?>"
+                       class="pt-category-pill flex-shrink-0 px-4 py-2 text-sm font-medium whitespace-nowrap rounded-full border transition-all cursor-pointer
+                              <?= $selectedCategory == $category->getId() ? 'text-white' : 'text-gray-600 bg-gray-50 border-gray-200 hover:border-[var(--color-primary,#0D9488)] hover:text-[var(--color-primary,#0D9488)]' ?>"
+                       <?php if ($selectedCategory == $category->getId()): ?>
+                           style="background-color: var(--color-primary, #0D9488); border-color: var(--color-primary, #0D9488); color: #fff;"
+                       <?php endif; ?>>
+                        <?= $escaper->escapeHtml($category->getName()) ?>
+                    </a>
+                <?php endforeach; ?>
+            </nav>
+        </div>
+        </div>
+    <?php endif; ?>
+
+    <!-- Testimonials Grid -->
+    <?php if ($testimonials->getSize() > 0): ?>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
+            <?php foreach ($testimonials as $testimonial): ?>
+                <?php
+                $rating = (int) $testimonial->getRating();
+                $nameParts = explode(' ', $testimonial->getCustomerName());
+                $initials = strtoupper(substr($nameParts[0], 0, 1));
+                if (isset($nameParts[1])) {
+                    $initials .= strtoupper(substr($nameParts[1], 0, 1));
+                }
+                $meta = [];
+                if ($testimonial->getCustomerTitle()) {
+                    $meta[] = $testimonial->getCustomerTitle();
+                }
+                if ($testimonial->getCustomerCompany()) {
+                    $meta[] = $testimonial->getCustomerCompany();
+                }
+                ?>
+                <a href="<?= $escaper->escapeUrl($block->getTestimonialUrl($testimonial)) ?>"
+                   class="pt-card flex flex-col bg-white border border-gray-200 rounded-xl p-6 transition-shadow hover:shadow-lg hover:border-gray-300 cursor-pointer h-full no-underline"
+                   style="border-radius: 12px;">
+
+                    <!-- Star Rating + Featured -->
+                    <div class="flex items-center justify-between mb-3">
+                        <?php if ($rating > 0): ?>
+                        <div class="flex" style="gap:1px;">
+                            <?php for ($i = 1; $i <= 5; $i++): ?>
+                                <span class="text-base leading-none" style="color: <?= $i <= $rating ? 'var(--testimonials-star, #EAB308)' : '#E5E7EB' ?>;">&#9733;</span>
+                            <?php endfor; ?>
+                        </div>
+                        <?php else: ?><div></div><?php endif; ?>
+                        <?php if ($testimonial->getIsFeatured()): ?>
+                        <span class="flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold" style="background:#FEF3C7;color:#92400E;font-size:10px;">
+                            <svg width="10" height="10" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                            Featured
+                        </span>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Title -->
+                    <h3 class="pt-card-title"><?= $escaper->escapeHtml($testimonial->getTitle()) ?></h3>
+
+                    <!-- Quote -->
+                    <div class="text-sm leading-relaxed text-gray-600 mb-4 flex-1 line-clamp-4">
+                        <span class="text-lg font-bold leading-none mr-0.5" style="color: var(--color-primary, #0D9488);">&ldquo;</span>
+                        <?= $escaper->escapeHtml($testimonial->getShortContent() ?: $testimonial->getContent()) ?>
+                    </div>
+
+                    <!-- Author -->
+                    <div class="flex items-center gap-3 mt-auto pt-4 border-t border-gray-100">
+                        <div class="w-11 h-11 rounded-full overflow-hidden flex-shrink-0 flex items-center justify-center"
+                             style="background: linear-gradient(135deg, var(--color-primary, #0D9488), var(--color-primary-lighter, #14B8A6));">
+                            <?php if ($testimonial->getCustomerImage()): ?>
+                                <img src="<?= $escaper->escapeUrl($testimonial->getCustomerImage()) ?>"
+                                     alt="<?= $escaper->escapeHtmlAttr($testimonial->getCustomerName()) ?>"
+                                     width="44" height="44" loading="lazy"
+                                     class="w-full h-full object-cover"/>
+                            <?php else: ?>
+                                <span class="text-sm font-semibold text-white leading-none"><?= $escaper->escapeHtml($initials) ?></span>
+                            <?php endif; ?>
+                        </div>
+                        <div class="flex flex-col min-w-0">
+                            <span class="text-sm font-semibold text-gray-900 truncate"><?= $escaper->escapeHtml($testimonial->getCustomerName()) ?></span>
+                            <?php if (!empty($meta)): ?>
+                                <span class="text-xs text-gray-400 truncate"><?= $escaper->escapeHtml(implode(', ', $meta)) ?></span>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </a>
+            <?php endforeach; ?>
+        </div>
+
+        <!-- Smart Pagination -->
+        <?php if ($testimonials->getLastPageNumber() > 1): ?>
+            <?php
+            $currentPage = (int) $testimonials->getCurPage();
+            $lastPage = (int) $testimonials->getLastPageNumber();
+            $delta = 2; // pages to show around current
+            $pages = [];
+
+            // Always show first page
+            $pages[] = 1;
+
+            // Range around current page
+            $rangeStart = max(2, $currentPage - $delta);
+            $rangeEnd = min($lastPage - 1, $currentPage + $delta);
+
+            // Add ellipsis after first if gap
+            if ($rangeStart > 2) {
+                $pages[] = '...';
+            }
+
+            // Add range pages
+            for ($i = $rangeStart; $i <= $rangeEnd; $i++) {
+                $pages[] = $i;
+            }
+
+            // Add ellipsis before last if gap
+            if ($rangeEnd < $lastPage - 1) {
+                $pages[] = '...';
+            }
+
+            // Always show last page
+            if ($lastPage > 1) {
+                $pages[] = $lastPage;
+            }
+
+            $getPageUrl = function (int $page) use ($block): string {
+                return $block->getPageUrl($page);
+            };
+            ?>
+            <nav class="flex items-center justify-center gap-1.5 flex-wrap mt-8" aria-label="<?= $escaper->escapeHtmlAttr(__('Pagination')) ?>">
+                <?php if ($currentPage > 1): ?>
+                    <a href="<?= $escaper->escapeUrl($getPageUrl($currentPage - 1)) ?>"
+                       class="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-lg border border-gray-200 hover:border-gray-400 transition-colors no-underline"
+                       style="color: var(--color-primary, #0D9488)"
+                       aria-label="<?= $escaper->escapeHtmlAttr(__('Previous')) ?>">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                        <?= $escaper->escapeHtml(__('Prev')) ?>
+                    </a>
+                <?php endif; ?>
+
+                <?php foreach ($pages as $page): ?>
+                    <?php if ($page === '...'): ?>
+                        <span class="px-2 py-2 text-sm text-gray-400 select-none">&hellip;</span>
+                    <?php elseif ((int) $page === $currentPage): ?>
+                        <span class="inline-flex items-center justify-center w-10 h-10 text-sm font-bold text-white rounded-lg"
+                              style="background: var(--color-primary, #0D9488)"
+                              aria-current="page"><?= (int) $page ?></span>
+                    <?php else: ?>
+                        <a href="<?= $escaper->escapeUrl($getPageUrl((int) $page)) ?>"
+                           class="inline-flex items-center justify-center w-10 h-10 text-sm font-medium rounded-lg border border-gray-200 hover:border-gray-400 transition-colors no-underline"
+                           style="color: var(--color-primary, #0D9488)">
+                            <?= (int) $page ?>
+                        </a>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+
+                <?php if ($currentPage < $lastPage): ?>
+                    <a href="<?= $escaper->escapeUrl($getPageUrl($currentPage + 1)) ?>"
+                       class="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-lg border border-gray-200 hover:border-gray-400 transition-colors no-underline"
+                       style="color: var(--color-primary, #0D9488)"
+                       aria-label="<?= $escaper->escapeHtmlAttr(__('Next')) ?>">
+                        <?= $escaper->escapeHtml(__('Next')) ?>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </a>
+                <?php endif; ?>
+            </nav>
+        <?php endif; ?>
+
+    <?php else: ?>
+        <div class="text-center py-16 text-gray-400">
+            <svg class="mx-auto mb-4" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            <p class="text-base mb-4"><?= $escaper->escapeHtml(__('No testimonials available yet.')) ?></p>
+            <?php if ($isSubmitEnabled): ?>
+                <button type="button" @click="showSubmitModal = true"
+                   class="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold text-white rounded-lg border-0 cursor-pointer"
+                   style="background-color: var(--color-primary, #0D9488);">
+                    <?= $escaper->escapeHtml(__('Be the first to share your experience!')) ?>
+                </button>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
+
+    <!-- Back to Top -->
+    <?php if ($testimonials->getSize() > 6): ?>
+        <div class="text-center mt-6">
+            <a href="#panth-testimonials-listing"
+               class="inline-flex items-center gap-1 text-sm font-medium no-underline transition-opacity hover:opacity-80"
+               style="color: var(--color-primary, #0D9488);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+                <?= $escaper->escapeHtml(__('Back to Top')) ?>
+            </a>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($isSubmitEnabled): ?>
+    <!-- Submit Testimonial Modal -->
+    <div x-show="showSubmitModal" x-transition.opacity style="display:none;" class="fixed inset-0 z-[9999]">
+            <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" @click="showSubmitModal = false"></div>
+            <div class="fixed inset-0 flex items-center justify-center p-4" style="z-index:10000;">
+                <div class="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col" style="width:100%;max-width:520px;max-height:90vh;" @click.stop>
+                    <!-- Header -->
+                    <div class="text-white" style="background:linear-gradient(135deg,var(--color-primary, #0D9488),var(--color-primary-darker, #0F766E));padding:20px 24px;position:relative;">
+                        <button @click="showSubmitModal = false" class="absolute flex items-center justify-center text-white border-0 cursor-pointer transition" style="top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.2);">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
+                        <h3 class="text-base font-bold m-0 text-white" style="padding-right:40px;"><?= $escaper->escapeHtml(__('Share Your Experience')) ?></h3>
+                        <p class="text-xs m-0 mt-1" style="color:rgba(255,255,255,0.7);"><?= $escaper->escapeHtml(__('We value your feedback!')) ?></p>
+                    </div>
+
+                    <!-- Success -->
+                    <div x-show="submitSuccess" class="p-8 text-center">
+                        <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center" style="background:#F0FDF4;">
+                            <svg width="32" height="32" fill="none" stroke="#16A34A" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        </div>
+                        <h4 class="text-lg font-bold text-gray-900 mb-2"><?= $escaper->escapeHtml(__('Thank You!')) ?></h4>
+                        <p class="text-sm text-gray-500"><?= $escaper->escapeHtml(__('Your testimonial has been submitted and will be reviewed shortly.')) ?></p>
+                    </div>
+
+                    <!-- Form -->
+                    <div x-show="!submitSuccess" class="p-6 overflow-y-auto flex-1">
+                        <div x-show="submitError" x-transition class="mb-4 p-3 rounded-lg text-sm font-medium" style="background:#FEF2F2;color:#991B1B;border:1px solid #FECACA;">
+                            <span x-text="submitError"></span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 mb-3">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1"><?= $escaper->escapeHtml(__('Name')) ?> *</label>
+                                <input x-model="submitForm.name" type="text" class="form-input w-full text-sm" placeholder="<?= $escaper->escapeHtmlAttr(__('John Doe')) ?>">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1"><?= $escaper->escapeHtml(__('Email')) ?> *</label>
+                                <input x-model="submitForm.email" type="email" class="form-input w-full text-sm" placeholder="<?= $escaper->escapeHtmlAttr(__('john@example.com')) ?>">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 mb-3">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1"><?= $escaper->escapeHtml(__('Title / Position')) ?></label>
+                                <input x-model="submitForm.title" type="text" class="form-input w-full text-sm" placeholder="<?= $escaper->escapeHtmlAttr(__('CEO')) ?>">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1"><?= $escaper->escapeHtml(__('Company')) ?></label>
+                                <input x-model="submitForm.company" type="text" class="form-input w-full text-sm" placeholder="<?= $escaper->escapeHtmlAttr(__('Acme Corp')) ?>">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="block text-sm font-semibold text-gray-700 mb-1"><?= $escaper->escapeHtml(__('Your Rating')) ?> *</label>
+                            <div class="flex gap-1">
+                                <template x-for="star in [1,2,3,4,5]" :key="star">
+                                    <button type="button" @click="setRating(star)" @mouseenter="hoverRating = star" @mouseleave="hoverRating = 0"
+                                            class="text-2xl cursor-pointer bg-transparent border-0 p-0 leading-none transition-transform hover:scale-110"
+                                            :style="'color:' + ((hoverRating || submitForm.rating) >= star ? '#EAB308' : '#E5E7EB')">&#9733;</button>
+                                </template>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="block text-sm font-semibold text-gray-700 mb-1"><?= $escaper->escapeHtml(__('Title')) ?> *</label>
+                            <input x-model="submitForm.testimonialTitle" type="text" class="form-input w-full text-sm" placeholder="<?= $escaper->escapeHtmlAttr(__('Great service and products!')) ?>">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-semibold text-gray-700 mb-1"><?= $escaper->escapeHtml(__('Your Testimonial')) ?> *</label>
+                            <textarea x-model="submitForm.content" rows="4" class="form-input w-full text-sm resize-y" placeholder="<?= $escaper->escapeHtmlAttr(__('Tell us about your experience...')) ?>"></textarea>
+                        </div>
+
+                        <!-- Honeypot -->
+                        <div style="position:absolute;left:-9999px;" aria-hidden="true">
+                            <input type="text" name="website_url" value="" tabindex="-1" autocomplete="off">
+                        </div>
+
+                        <button @click="submitTestimonial()" :disabled="submitting"
+                                class="w-full py-3 px-4 text-sm font-bold text-white rounded-lg border-0 cursor-pointer flex items-center justify-center gap-2 transition-all"
+                                style="background:linear-gradient(135deg,var(--color-primary, #0D9488),var(--color-primary-lighter, #14B8A6));"
+                                :class="submitting && 'opacity-60 cursor-not-allowed'">
+                            <svg x-show="!submitting" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            <span x-text="submitting ? '<?= $escaper->escapeJs(__('Submitting...')) ?>' : '<?= $escaper->escapeJs(__('Submit Testimonial')) ?>'"></span>
+                        </button>
+
+                        <div class="flex items-center justify-center gap-4 mt-4 text-xs text-gray-400">
+                            <span class="flex items-center gap-1"><svg width="12" height="12" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg> <?= $escaper->escapeHtml(__('Secure')) ?></span>
+                            <span class="flex items-center gap-1"><svg width="12" height="12" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> <?= $escaper->escapeHtml(__('Reviewed by team')) ?></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+</section>
+
+<script>
+// Mouse-wheel horizontal scroll for the testimonials category tab strip.
+// By default `overflow-x: auto` containers only respond to vertical wheel
+// when the user holds Shift. This handler converts vertical wheel deltas
+// into horizontal scrollLeft so the user can scroll the tabs with a
+// regular mouse wheel as well as touch / scrollbar drag.
+(function () {
+    'use strict';
+    function wireWheel(el) {
+        if (!el || el.dataset.panthWheelBound === '1') return;
+        el.dataset.panthWheelBound = '1';
+        el.addEventListener('wheel', function (e) {
+            if (el.scrollWidth <= el.clientWidth + 1) return;
+            if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+            var atLeft = el.scrollLeft <= 0 && e.deltaY < 0;
+            var atRight = (el.scrollLeft + el.clientWidth) >= (el.scrollWidth - 1) && e.deltaY > 0;
+            if (atLeft || atRight) return;
+            e.preventDefault();
+            el.scrollLeft += e.deltaY;
+        }, { passive: false });
+    }
+    function init() {
+        document.querySelectorAll('.panth-testimonials-tabs-scroll').forEach(wireWheel);
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
+</script>

@@ -1,0 +1,100 @@
+<?php
+/**
+ * Panth Testimonials — Single View Template (Hyva / Alpine.js)
+ *
+ * @var $block \Panth\Testimonials\Block\View
+ * @var $escaper \Magento\Framework\Escaper
+ */
+
+$testimonial = $block->getTestimonial();
+if (!$testimonial) {
+    return '';
+}
+
+$backUrl = $block->getBackUrl();
+$categoryName = $block->getCategoryName();
+$rating = (int) $testimonial->getRating();
+$createdAt = $testimonial->getCreatedAt();
+$formattedDate = $createdAt ? date('F j, Y', strtotime($createdAt)) : '';
+
+$nameParts = explode(' ', $testimonial->getCustomerName());
+$initials = strtoupper(substr($nameParts[0], 0, 1));
+if (isset($nameParts[1])) {
+    $initials .= strtoupper(substr($nameParts[1], 0, 1));
+}
+
+$meta = [];
+if ($testimonial->getCustomerTitle()) {
+    $meta[] = $testimonial->getCustomerTitle();
+}
+if ($testimonial->getCustomerCompany()) {
+    $meta[] = $testimonial->getCustomerCompany();
+}
+?>
+
+<section class="pt-view max-w-3xl mx-auto px-4 py-8">
+
+    <!-- Back Link -->
+    <a href="<?= $escaper->escapeUrl($backUrl) ?>"
+       class="inline-flex items-center gap-1.5 text-sm font-medium mb-6 no-underline transition-opacity hover:opacity-80"
+       style="color: var(--color-primary, #0D9488);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <?= $escaper->escapeHtml(__('Back to Testimonials')) ?>
+    </a>
+
+    <!-- Main Card -->
+    <div class="pt-view-card">
+        <!-- Header with gradient -->
+        <div class="pt-view-header">
+            <div class="flex items-center gap-5">
+                <div class="pt-view-avatar">
+                    <?php if ($testimonial->getCustomerImage()): ?>
+                        <img src="<?= $escaper->escapeUrl($testimonial->getCustomerImage()) ?>"
+                             alt="<?= $escaper->escapeHtmlAttr($testimonial->getCustomerName()) ?>"
+                             width="72" height="72" loading="lazy"
+                             class="w-full h-full object-cover"/>
+                    <?php else: ?>
+                        <?= $escaper->escapeHtml($initials) ?>
+                    <?php endif; ?>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-white m-0"><?= $escaper->escapeHtml($testimonial->getCustomerName()) ?></h2>
+                    <?php if (!empty($meta)): ?>
+                        <p class="text-xs text-white/70 m-0 mt-0.5"><?= $escaper->escapeHtml(implode(', ', $meta)) ?></p>
+                    <?php endif; ?>
+                    <?php if ($rating > 0): ?>
+                        <div class="flex mt-2" style="gap:1px;">
+                            <?php for ($i = 1; $i <= 5; $i++): ?>
+                                <span class="text-sm leading-none" style="color: <?= $i <= $rating ? '#FCD34D' : 'rgba(255,255,255,0.3)' ?>;">&#9733;</span>
+                            <?php endfor; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+        <!-- Body -->
+        <div class="pt-view-body">
+            <?php if ($testimonial->getTitle()): ?>
+                <h1 class="text-2xl font-bold text-gray-900 mb-4 leading-snug m-0">
+                    <?= $escaper->escapeHtml($testimonial->getTitle()) ?>
+                </h1>
+            <?php endif; ?>
+
+            <div class="text-base leading-loose text-gray-600 mb-6">
+                <?= /** @noEscape */ nl2br($escaper->escapeHtml($testimonial->getContent())) ?>
+            </div>
+
+            <div class="flex items-center gap-3 flex-wrap pt-4 border-t border-gray-100">
+                <?php if ($categoryName): ?>
+                    <a href="<?= $escaper->escapeUrl($block->getCategoryUrl() ?: '#') ?>" class="pt-category-badge">
+                        <?= $escaper->escapeHtml($categoryName) ?>
+                    </a>
+                <?php endif; ?>
+                <?php if ($formattedDate): ?>
+                    <span class="text-sm text-gray-400"><?= $escaper->escapeHtml($formattedDate) ?></span>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</section>

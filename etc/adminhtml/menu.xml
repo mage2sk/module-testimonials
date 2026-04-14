@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <!-- Parent: Panth Extensions tab (defined in Panth_Core or created here if needed) -->
+        <add id="Panth_Testimonials::testimonials"
+             title="Testimonials"
+             module="Panth_Testimonials"
+             sortOrder="30"
+             parent="Panth_Core::panth_extensions"
+             resource="Panth_Testimonials::testimonials"/>
+
+        <add id="Panth_Testimonials::manage_testimonials"
+             title="Manage Testimonials"
+             module="Panth_Testimonials"
+             sortOrder="10"
+             parent="Panth_Testimonials::testimonials"
+             resource="Panth_Testimonials::manage_testimonials"
+             action="panth_testimonials/testimonial/index"/>
+
+        <add id="Panth_Testimonials::manage_categories"
+             title="Manage Categories"
+             module="Panth_Testimonials"
+             sortOrder="20"
+             parent="Panth_Testimonials::testimonials"
+             resource="Panth_Testimonials::manage_categories"
+             action="panth_testimonials/category/index"/>
+
+        <add id="Panth_Testimonials::configuration"
+             title="Configuration"
+             module="Panth_Testimonials"
+             sortOrder="30"
+             parent="Panth_Testimonials::testimonials"
+             resource="Panth_Testimonials::configuration"
+             action="adminhtml/system_config/edit/section/panth_testimonials"/>
+    </menu>
+</config>

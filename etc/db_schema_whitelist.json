@@ -1,0 +1,54 @@
+{
+    "panth_testimonial_category": {
+        "column": {
+            "category_id": true,
+            "name": true,
+            "url_key": true,
+            "description": true,
+            "is_active": true,
+            "sort_order": true,
+            "store_id": true
+        },
+        "index": {
+            "PANTH_TESTIMONIAL_CATEGORY_URL_KEY": true,
+            "PANTH_TESTIMONIAL_CATEGORY_IS_ACTIVE": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "panth_testimonial": {
+        "column": {
+            "testimonial_id": true,
+            "category_id": true,
+            "customer_name": true,
+            "customer_email": true,
+            "customer_title": true,
+            "customer_company": true,
+            "customer_image": true,
+            "rating": true,
+            "title": true,
+            "content": true,
+            "short_content": true,
+            "url_key": true,
+            "status": true,
+            "is_featured": true,
+            "sort_order": true,
+            "store_id": true,
+            "meta_title": true,
+            "meta_description": true,
+            "created_at": true,
+            "updated_at": true
+        },
+        "index": {
+            "PANTH_TESTIMONIAL_URL_KEY": true,
+            "PANTH_TESTIMONIAL_STATUS": true,
+            "PANTH_TESTIMONIAL_CATEGORY_ID": true,
+            "PANTH_TESTIMONIAL_IS_FEATURED": true,
+            "PANTH_TESTIMONIAL_SORT_ORDER": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    }
+}
