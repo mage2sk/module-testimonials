@@ -55,7 +55,7 @@ $submitUrl = $block->getSubmitUrl();
     <!-- Header -->
     <div class="flex items-center justify-between flex-wrap gap-3 mb-6">
         <h1 class="text-2xl font-bold text-gray-900 m-0">
-            <?= $escaper->escapeHtml(__('Customer Testimonials')) ?>
+            <?= $escaper->escapeHtml($block->getH1()) ?>
         </h1>
         <?php if ($isSubmitEnabled): ?>
             <button type="button"

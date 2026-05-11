@@ -17,7 +17,7 @@ $submitUrl = $block->getSubmitUrl();
 <div class="panth-testimonials-module" id="panth-testimonials-listing">
     <!-- Header -->
     <div class="testimonials-header">
-        <h1 class="testimonials-title"><?= $escaper->escapeHtml(__('Customer Testimonials')) ?></h1>
+        <h1 class="testimonials-title"><?= $escaper->escapeHtml($block->getH1()) ?></h1>
         <?php if ($isSubmitEnabled): ?>
             <a href="<?= $escaper->escapeUrl($submitUrl) ?>" class="testimonials-submit-btn">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>

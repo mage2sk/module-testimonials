@@ -103,6 +103,74 @@ class Testimonials extends Template
     }
 
     /**
+     * Resolve the current Category model (if any) for the listing context.
+     * Looks up by url_key first (category route), then by id ('category' param).
+     */
+    public function getCurrentCategory(): ?Category
+    {
+        $urlKey = (string) $this->getRequest()->getParam('url_key', '');
+        if ($urlKey !== '') {
+            $catCollection = $this->categoryCollectionFactory->create();
+            $catCollection->addFieldToFilter('url_key', $urlKey)
+                          ->addFieldToFilter('is_active', 1)
+                          ->setPageSize(1);
+            $cat = $catCollection->getFirstItem();
+            if ($cat->getId()) {
+                return $cat;
+            }
+        }
+
+        $categoryId = (int) $this->getRequest()->getParam('category', 0);
+        if ($categoryId > 0) {
+            $catCollection = $this->categoryCollectionFactory->create();
+            $catCollection->addFieldToFilter('category_id', $categoryId)
+                          ->addFieldToFilter('is_active', 1)
+                          ->setPageSize(1);
+            $cat = $catCollection->getFirstItem();
+            if ($cat->getId()) {
+                return $cat;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Compute a context-aware H1 for the listing template so that the
+     * default listing, category listing, and paginated listing pages each
+     * emit a unique, descriptive heading (avoids duplicate-H1 SEO flags).
+     *
+     * - Category page:     "{Category Name} — Client Testimonials"
+     * - Pagination N > 1:  "Client Testimonials — Page N"
+     * - Default listing:   "Client Testimonials"
+     *
+     * The base label falls back to the admin "Page Title" config so stores
+     * that customise wording continue to control the heading copy.
+     */
+    public function getH1(): string
+    {
+        $base = $this->helper->getPageTitle();
+        if ($base === '') {
+            $base = (string) __('Client Testimonials');
+        }
+
+        $category = $this->getCurrentCategory();
+        if ($category && $category->getName()) {
+            return sprintf('%s — %s', $category->getName(), $base);
+        }
+
+        $page = (int) $this->getRequest()->getParam('p', 1);
+        if ($page < 1) {
+            $page = 1;
+        }
+        if ($page > 1) {
+            return sprintf('%s — %s %d', $base, (string) __('Page'), $page);
+        }
+
+        return $base;
+    }
+
+    /**
      * Build testimonial detail URL
      */
     public function getTestimonialUrl(Testimonial $testimonial): string
