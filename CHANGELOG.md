@@ -4,7 +4,14 @@ All notable changes to this extension are documented here. The format
 is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [1.0.0] — Initial release
+## [1.0.7] - 2026-06-18
+
+### Changed
+- Rewrote README.md to match gold-template structure: SEO meta comment, Quick Answer block, proper Configuration table sourced from system.xml, corrected feature list (removed unverified claims such as half-star ratings, video testimonials, CSV import, and ReCAPTCHA), added product page badge and canonical link, updated Quick Links to table format.
+
+---
+
+## [1.0.0] - Initial release
 
 ### Added
 - **Testimonials listing page** with category filter pills, smart
