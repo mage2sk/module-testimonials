@@ -1,7 +1,4 @@
 <?php
-/**
- * Copyright (c) Panth Infotech. All rights reserved.
- */
 declare(strict_types=1);
 
 namespace Panth\Testimonials\Model;
@@ -17,14 +14,8 @@ class Testimonial extends AbstractModel
     public const STATUS_APPROVED = 1;
     public const STATUS_REJECTED = 2;
 
-    /**
-     * @var string
-     */
     protected $_cacheTag = self::CACHE_TAG;
 
-    /**
-     * @var string
-     */
     protected $_eventPrefix = 'panth_testimonial';
 
     protected function _construct(): void

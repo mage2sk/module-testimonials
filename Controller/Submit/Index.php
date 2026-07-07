@@ -1,7 +1,4 @@
 <?php
-/**
- * Copyright (c) Panth Infotech. All rights reserved.
- */
 declare(strict_types=1);
 
 namespace Panth\Testimonials\Controller\Submit;
@@ -26,12 +23,10 @@ class Index implements HttpGetActionInterface
             return $this->forwardFactory->create()->forward('noroute');
         }
 
-        /** @var Page $resultPage */
         $resultPage = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
 
         $resultPage->getConfig()->getTitle()->set(__('Submit a Testimonial'));
 
-        // Breadcrumbs
         $breadcrumbs = $resultPage->getLayout()->getBlock('breadcrumbs');
         if ($breadcrumbs) {
             $breadcrumbs->addCrumb('home', [

@@ -1,7 +1,4 @@
 <?php
-/**
- * Copyright (c) Panth Infotech. All rights reserved.
- */
 declare(strict_types=1);
 
 namespace Panth\Testimonials\Model;
@@ -13,14 +10,8 @@ class Category extends AbstractModel
 {
     public const CACHE_TAG = 'panth_testimonial_category';
 
-    /**
-     * @var string
-     */
     protected $_cacheTag = self::CACHE_TAG;
 
-    /**
-     * @var string
-     */
     protected $_eventPrefix = 'panth_testimonial_category';
 
     protected function _construct(): void

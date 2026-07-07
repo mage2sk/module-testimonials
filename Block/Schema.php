@@ -1,9 +1,4 @@
 <?php
-/**
- * Copyright (c) Panth Infotech. All rights reserved.
- *
- * Outputs JSON-LD structured data for testimonials (Review schema).
- */
 declare(strict_types=1);
 
 namespace Panth\Testimonials\Block;
@@ -27,17 +22,6 @@ class Schema extends Template
         parent::__construct($context, $data);
     }
 
-    /**
-     * Generate JSON-LD schema for testimonials on the current page.
-     *
-     * Emits a top-level `ItemList` whose entries are `Review` nodes. This
-     * shape is deliberately chosen so the output does NOT collide with
-     * Panth_AdvancedSEO's singleton `Organization` / `WebSite` / `BreadcrumbList`
-     * nodes that are emitted from the head on every page — `ItemList` is
-     * unique to the testimonials listing page. Each Review references the
-     * store `Organization` via `@id` so crawlers attach the ratings to the
-     * single Organization entity emitted by Panth_AdvancedSEO.
-     */
     public function getSchemaJson(): string
     {
         try {
@@ -103,13 +87,6 @@ class Schema extends Template
             return '';
         }
 
-        // ItemList wraps Review nodes as itemListElement so the top-level
-        // `@type` on this page is `ItemList` — a type not emitted by the
-        // sitewide Panth_AdvancedSEO aggregator — eliminating the historic
-        // duplicate Organization block. The aggregateRating is carried on
-        // the referenced Organization via its shared `@id` so crawlers still
-        // see the full aggregate against the store entity emitted by
-        // Panth_AdvancedSEO\Model\StructuredData\Provider\OrganizationProvider.
         $schema = [
             '@context' => 'https://schema.org',
             '@type' => 'ItemList',

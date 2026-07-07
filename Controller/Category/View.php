@@ -49,13 +49,6 @@ class View extends Action
             $category->getDescription()
         );
         $pageConfig->setDescription($metaDescription);
-        // OpenGraph + Twitter Card tags are emitted centrally by
-        // Panth_AdvancedSEO via its canonical.phtml ViewModels. Emitting
-        // them here as well produced duplicate og:title / og:description /
-        // twitter:* tags in the <head>. AdvancedSEO's OpenGraphResolver
-        // falls back to the controller-set page title/description on
-        // routes without a catalog/CMS entity in the registry, so the
-        // single emission still renders the correct values.
 
         $breadcrumbs = $resultPage->getLayout()->getBlock('breadcrumbs');
         if ($breadcrumbs) {

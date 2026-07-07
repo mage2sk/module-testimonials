@@ -1,7 +1,4 @@
 <?php
-/**
- * Copyright (c) Panth Infotech. All rights reserved.
- */
 declare(strict_types=1);
 
 namespace Panth\Testimonials\Controller\Submit;
@@ -40,26 +37,20 @@ class Save implements HttpPostActionInterface
             return $redirect->setPath($this->helper->getBaseUrl());
         }
 
-        // Validate form key
         if (!$this->formKeyValidator->validate($this->request)) {
             $this->messageManager->addErrorMessage(__('Invalid form submission. Please try again.'));
             return $redirect->setPath($this->helper->getBaseUrl() . '/submit');
         }
 
-        // Honeypot — bot protection: if hidden field is filled, silently reject
         $honeypot = trim((string) $this->request->getParam('website_url'));
         if (!empty($honeypot)) {
-            // Bot detected — pretend success but don't save
             $this->messageManager->addSuccessMessage(__('Thank you for your testimonial!'));
             return $redirect->setPath($this->helper->getBaseUrl());
         }
 
-        // Rate limiting — max 5 submissions per IP per hour
         $clientIp = $this->request->getClientIp() ?: 'unknown';
         $rateLimitKey = 'panth_testimonial_submit_' . hash('sha256', $clientIp);
-        // Simple rate limit via session (not persistent, but blocks rapid fire)
 
-        // Get and validate input
         $customerName = $this->filterManager->stripTags(trim((string) $this->request->getParam('customer_name')));
         $customerEmail = $this->filterManager->stripTags(trim((string) $this->request->getParam('customer_email')));
         $title = $this->filterManager->stripTags(trim((string) $this->request->getParam('title')));
@@ -69,7 +60,6 @@ class Save implements HttpPostActionInterface
         $rating = (int) $this->request->getParam('rating', 5);
         $categoryId = $this->request->getParam('category_id');
 
-        // Validate required fields
         $errors = [];
         if (empty($customerName)) {
             $errors[] = __('Name is required.');
@@ -95,7 +85,6 @@ class Save implements HttpPostActionInterface
         }
 
         try {
-            // Generate URL key from title
             $urlKey = $this->filterManager->translitUrl($title);
             if (empty($urlKey)) {
                 $urlKey = 'testimonial-' . time();

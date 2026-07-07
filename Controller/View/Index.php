@@ -1,7 +1,4 @@
 <?php
-/**
- * Copyright (c) Panth Infotech. All rights reserved.
- */
 declare(strict_types=1);
 
 namespace Panth\Testimonials\Controller\View;
@@ -45,17 +42,14 @@ class Index extends Action
 
         $resultPage = $this->resultPageFactory->create();
 
-        // Set meta title from testimonial or fall back to testimonial title
         $metaTitle = $testimonial->getMetaTitle() ?: $testimonial->getTitle();
         $resultPage->getConfig()->getTitle()->set($metaTitle);
 
-        // Set meta description
         $metaDesc = $testimonial->getMetaDescription();
         if ($metaDesc) {
             $resultPage->getConfig()->setDescription($metaDesc);
         }
 
-        // Breadcrumbs
         $breadcrumbs = $resultPage->getLayout()->getBlock('breadcrumbs');
         if ($breadcrumbs) {
             $breadcrumbs->addCrumb('home', [

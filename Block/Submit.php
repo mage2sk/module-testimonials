@@ -1,7 +1,4 @@
 <?php
-/**
- * Copyright (c) Panth Infotech. All rights reserved.
- */
 declare(strict_types=1);
 
 namespace Panth\Testimonials\Block;
@@ -20,17 +17,11 @@ class Submit extends Template
         parent::__construct($context, $data);
     }
 
-    /**
-     * Check if testimonial submission is enabled
-     */
     public function isEnabled(): bool
     {
         return $this->helper->isSubmitEnabled();
     }
 
-    /**
-     * Get the POST action URL for the submit form
-     */
     public function getSubmitPostUrl(): string
     {
         return $this->getUrl('testimonials/submit/save');

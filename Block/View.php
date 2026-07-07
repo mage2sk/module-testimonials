@@ -1,7 +1,4 @@
 <?php
-/**
- * Copyright (c) Panth Infotech. All rights reserved.
- */
 declare(strict_types=1);
 
 namespace Panth\Testimonials\Block;
@@ -29,9 +26,6 @@ class View extends Template
         parent::__construct($context, $data);
     }
 
-    /**
-     * Load and return the current testimonial by url_key
-     */
     public function getTestimonial(): ?Testimonial
     {
         if ($this->currentTestimonial === null) {
@@ -52,26 +46,17 @@ class View extends Template
         return $this->currentTestimonial;
     }
 
-    /**
-     * Get back URL to testimonials listing
-     */
     public function getBackUrl(): string
     {
         return $this->getBaseUrl() . $this->helper->getBaseUrl();
     }
 
-    /**
-     * Resolve the category name for the current testimonial
-     */
     public function getCategoryName(): ?string
     {
         $category = $this->loadCategory();
         return $category ? $category->getName() : null;
     }
 
-    /**
-     * Get URL for the testimonial's category using the configured route
-     */
     public function getCategoryUrl(): ?string
     {
         $category = $this->loadCategory();

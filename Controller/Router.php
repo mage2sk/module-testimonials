@@ -1,13 +1,4 @@
 <?php
-/**
- * Copyright (c) Panth Infotech. All rights reserved.
- *
- * Custom router for testimonial URLs:
- *   /testimonials           → Index/Index
- *   /testimonials/submit    → Submit/Index
- *   /testimonials/category/{url_key} → Category/View
- *   /testimonials/{url_key} → View/Index
- */
 declare(strict_types=1);
 
 namespace Panth\Testimonials\Controller;
@@ -38,7 +29,6 @@ class Router implements RouterInterface
         $identifier = trim($request->getPathInfo(), '/');
         $baseRoute = $this->helper->getBaseUrl();
 
-        // Exact match: /testimonials
         if ($identifier === $baseRoute) {
             $request->setModuleName('testimonials')
                     ->setControllerName('index')
@@ -46,7 +36,6 @@ class Router implements RouterInterface
             return $this->actionFactory->create(\Magento\Framework\App\Action\Forward::class);
         }
 
-        // Must start with base route
         if (!str_starts_with($identifier, $baseRoute . '/')) {
             return null;
         }
@@ -54,7 +43,6 @@ class Router implements RouterInterface
         $pathSuffix = substr($identifier, strlen($baseRoute) + 1);
         $parts = explode('/', $pathSuffix);
 
-        // /testimonials/page/{num} → listing with page param
         if ($parts[0] === 'page' && isset($parts[1]) && is_numeric($parts[1])) {
             $request->setModuleName('testimonials')
                     ->setControllerName('index')
@@ -63,7 +51,6 @@ class Router implements RouterInterface
             return $this->actionFactory->create(\Magento\Framework\App\Action\Forward::class, ['request' => $request]);
         }
 
-        // /testimonials/submit
         if ($parts[0] === 'submit' && count($parts) === 1) {
             $request->setModuleName('testimonials')
                     ->setControllerName('submit')
@@ -71,17 +58,14 @@ class Router implements RouterInterface
             return $this->actionFactory->create(\Magento\Framework\App\Action\Forward::class);
         }
 
-        // /testimonials/submit/save (POST handler) — let standard router handle
         if ($parts[0] === 'submit' && isset($parts[1]) && $parts[1] === 'save') {
             return null;
         }
 
-        // /testimonials/category/view, /testimonials/view/index etc — let standard router handle
         if (count($parts) >= 2 && in_array($parts[1], ['view', 'index', 'save', 'delete', 'edit', 'new'])) {
             return null;
         }
 
-        // /testimonials/category/{url_key}
         if ($parts[0] === 'category' && isset($parts[1]) && $parts[1] !== '') {
             $request->setModuleName('testimonials')
                     ->setControllerName('category')
@@ -90,11 +74,9 @@ class Router implements RouterInterface
             return $this->actionFactory->create(\Magento\Framework\App\Action\Forward::class, ['request' => $request]);
         }
 
-        // /testimonials/{url_key} — check category first, then testimonial
         if (count($parts) === 1 && $parts[0] !== '') {
             $slug = $parts[0];
 
-            // Check if slug is a category url_key
             $categoryCollection = $this->categoryCollectionFactory->create();
             $categoryCollection->addFieldToFilter('url_key', $slug)
                               ->addFieldToFilter('is_active', 1)
@@ -108,7 +90,6 @@ class Router implements RouterInterface
                 return $this->actionFactory->create(\Magento\Framework\App\Action\Forward::class, ['request' => $request]);
             }
 
-            // Check if slug is a testimonial url_key
             $testimonialCollection = $this->testimonialCollectionFactory->create();
             $testimonialCollection->addFieldToFilter('url_key', $slug)
                                  ->addFieldToFilter('status', Testimonial::STATUS_APPROVED)

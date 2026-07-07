@@ -1,7 +1,4 @@
 <?php
-/**
- * Copyright (c) Panth Infotech. All rights reserved.
- */
 declare(strict_types=1);
 
 namespace Panth\Testimonials\Model\Config\Source;
@@ -17,9 +14,6 @@ class CategoryList implements OptionSourceInterface
         private readonly CollectionFactory $collectionFactory
     ) {}
 
-    /**
-     * @return array<int, array{value: int|string, label: string}>
-     */
     public function toOptionArray(): array
     {
         if ($this->options === null) {

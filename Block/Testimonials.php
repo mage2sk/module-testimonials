@@ -1,7 +1,4 @@
 <?php
-/**
- * Copyright (c) Panth Infotech. All rights reserved.
- */
 declare(strict_types=1);
 
 namespace Panth\Testimonials\Block;
@@ -33,9 +30,6 @@ class Testimonials extends Template
         parent::__construct($context, $data);
     }
 
-    /**
-     * Get approved testimonials, filtered by store and optionally by category
-     */
     public function getTestimonials(): TestimonialCollection
     {
         if ($this->testimonialCollection === null) {
@@ -51,7 +45,6 @@ class Testimonials extends Template
 
             $this->testimonialCollection->setPageSize($this->helper->getItemsPerPage());
 
-            // Set current page from request
             $currentPage = (int) $this->getRequest()->getParam('p', 1);
             if ($currentPage < 1) $currentPage = 1;
             $this->testimonialCollection->setCurPage($currentPage);
@@ -60,9 +53,6 @@ class Testimonials extends Template
         return $this->testimonialCollection;
     }
 
-    /**
-     * Get active categories
-     */
     public function getCategories(): CategoryCollection
     {
         if ($this->categoryCollection === null) {
@@ -75,10 +65,6 @@ class Testimonials extends Template
         return $this->categoryCollection;
     }
 
-    /**
-     * Get selected category ID from request
-     * Supports both 'category' (ID) and 'url_key' (slug) params
-     */
     public function getSelectedCategory(): ?string
     {
         $categoryId = $this->getRequest()->getParam('category');
@@ -86,7 +72,6 @@ class Testimonials extends Template
             return $categoryId;
         }
 
-        // Check url_key param (from Router on category pages)
         $urlKey = $this->getRequest()->getParam('url_key');
         if ($urlKey) {
             $catCollection = $this->categoryCollectionFactory->create();
@@ -102,10 +87,6 @@ class Testimonials extends Template
         return null;
     }
 
-    /**
-     * Resolve the current Category model (if any) for the listing context.
-     * Looks up by url_key first (category route), then by id ('category' param).
-     */
     public function getCurrentCategory(): ?Category
     {
         $urlKey = (string) $this->getRequest()->getParam('url_key', '');
@@ -135,18 +116,6 @@ class Testimonials extends Template
         return null;
     }
 
-    /**
-     * Compute a context-aware H1 for the listing template so that the
-     * default listing, category listing, and paginated listing pages each
-     * emit a unique, descriptive heading (avoids duplicate-H1 SEO flags).
-     *
-     * - Category page:     "{Category Name} — Client Testimonials"
-     * - Pagination N > 1:  "Client Testimonials — Page N"
-     * - Default listing:   "Client Testimonials"
-     *
-     * The base label falls back to the admin "Page Title" config so stores
-     * that customise wording continue to control the heading copy.
-     */
     public function getH1(): string
     {
         $base = $this->helper->getPageTitle();
@@ -170,49 +139,31 @@ class Testimonials extends Template
         return $base;
     }
 
-    /**
-     * Build testimonial detail URL
-     */
     public function getTestimonialUrl(Testimonial $testimonial): string
     {
         return $this->getBaseUrl() . $this->helper->getBaseUrl() . '/' . $testimonial->getUrlKey();
     }
 
-    /**
-     * Build category URL
-     */
     public function getCategoryUrl(Category $category): string
     {
         return $this->getBaseUrl() . $this->helper->getBaseUrl() . '/category/' . $category->getUrlKey();
     }
 
-    /**
-     * Build pagination URL for a given page number
-     */
     public function getPageUrl(int $page): string
     {
         return $this->getBaseUrl() . $this->helper->getBaseUrl() . '/page/' . $page;
     }
 
-    /**
-     * Build submit form URL
-     */
     public function getSubmitUrl(): string
     {
         return $this->getBaseUrl() . $this->helper->getBaseUrl() . '/submit';
     }
 
-    /**
-     * Check if submit form is enabled
-     */
     public function isSubmitEnabled(): bool
     {
         return $this->helper->isSubmitEnabled();
     }
 
-    /**
-     * Get items per page from config
-     */
     public function getItemsPerPage(): int
     {
         return $this->helper->getItemsPerPage();

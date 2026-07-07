@@ -1,7 +1,4 @@
 <?php
-/**
- * Copyright (c) Panth Infotech. All rights reserved.
- */
 declare(strict_types=1);
 
 namespace Panth\Testimonials\Helper;
@@ -54,9 +51,6 @@ class Data extends AbstractHelper
         return self::DEFAULT_META_DESCRIPTION;
     }
 
-    /**
-     * Build a default description for a testimonials category page.
-     */
     public function getCategoryMetaDescription(string $categoryName, ?string $categoryDescription = null, ?int $storeId = null): string
     {
         $categoryDescription = $categoryDescription !== null ? trim(strip_tags($categoryDescription)) : '';
@@ -96,7 +90,6 @@ class Data extends AbstractHelper
             $storeId
         );
 
-        // Default to true if not set
         return $value === null ? true : (bool) $value;
     }
 

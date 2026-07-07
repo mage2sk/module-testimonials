@@ -1,7 +1,4 @@
 <?php
-/**
- * Copyright (c) Panth Infotech. All rights reserved.
- */
 declare(strict_types=1);
 
 namespace Panth\Testimonials\Model\Config\Source;
@@ -11,9 +8,6 @@ use Panth\Testimonials\Model\Testimonial;
 
 class Status implements OptionSourceInterface
 {
-    /**
-     * @return array<int, array{value: int, label: string}>
-     */
     public function toOptionArray(): array
     {
         return [
@@ -23,9 +17,6 @@ class Status implements OptionSourceInterface
         ];
     }
 
-    /**
-     * @return array<int, string>
-     */
     public function toArray(): array
     {
         return [

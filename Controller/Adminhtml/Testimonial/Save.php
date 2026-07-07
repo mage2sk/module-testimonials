@@ -41,7 +41,6 @@ class Save extends Action
                 $testimonial->unsetData('testimonial_id');
             }
 
-            // Always sanitize URL key — no spaces, lowercase, hyphens only
             $urlKey = $testimonial->getData('url_key');
             if (empty($urlKey)) {
                 $urlKey = $testimonial->getData('customer_name') . '-' . $testimonial->getData('title');

@@ -41,7 +41,6 @@ class Save extends Action
                 $category->unsetData('category_id');
             }
 
-            // Always sanitize URL key — no spaces, lowercase, hyphens only
             $urlKey = $category->getData('url_key');
             if (empty($urlKey)) {
                 $urlKey = $category->getData('name');
