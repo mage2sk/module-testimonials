@@ -4,6 +4,13 @@ All notable changes to this extension are documented here. The format
 is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.0.9]
+
+### Changed
+- Replaced typographic characters (em dashes, curly quotes, ellipsis) with plain ASCII punctuation. No functional changes.
+
+---
+
 ## [1.0.8]
 
 ### Changed
@@ -30,10 +37,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - **Frontend submission form** with interactive star rating picker,
   honeypot bot protection, form-key CSRF validation, and admin
   approval workflow (Pending / Approved / Rejected statuses).
-- **Testimonial Slider widget** — configurable carousel for CMS
+- **Testimonial Slider widget** - configurable carousel for CMS
   pages and blocks with autoplay, category filtering, featured-only
   mode, and responsive column counts.
-- **JSON-LD structured data** — emits `ItemList` of `Review` schema
+- **JSON-LD structured data** - emits `ItemList` of `Review` schema
   nodes on the testimonials listing page for rich search snippets.
 - **Admin grids** for testimonials and categories with mass-delete,
   status filters, and full CRUD.
@@ -41,7 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   Extensions > Testimonials for module enable/disable, page title,
   meta description, URL route, items per page, and submission
   settings.
-- **Dual-theme support** — ships separate Hyva (Alpine.js / Tailwind)
+- **Dual-theme support** - ships separate Hyva (Alpine.js / Tailwind)
   and Luma (vanilla JS / inline CSS) templates. Theme detection is
   handled automatically via Panth_Core.
 - **Custom router** for clean SEO URLs (`/testimonials`,
@@ -49,7 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   `/testimonials/page/{num}`, `/testimonials/submit`).
 
 ### Compatibility
-- Magento Open Source / Commerce / Cloud 2.4.4 — 2.4.8
+- Magento Open Source / Commerce / Cloud 2.4.4 - 2.4.8
 - PHP 8.1, 8.2, 8.3, 8.4
 
 ---

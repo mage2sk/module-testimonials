@@ -1,4 +1,4 @@
-# Panth Testimonials — User Guide
+# Panth Testimonials - User Guide
 
 This guide walks store administrators through installing, configuring,
 and using the Panth Testimonials extension for Magento 2.
@@ -73,19 +73,19 @@ form includes:
 
 - **Customer Name** (required)
 - **Customer Email**
-- **Title / Position** — job title (optional)
-- **Company** — company name (optional)
-- **Customer Image** — photo path (optional)
-- **Rating** — 1 to 5 stars
-- **Title** (required) — headline for the testimonial
-- **Content** (required) — full testimonial text
-- **Short Content** — excerpt shown on listing cards
-- **URL Key** — auto-generated from title if left blank
-- **Status** — Pending / Approved / Rejected
-- **Is Featured** — featured testimonials can be filtered in the widget
-- **Sort Order** — lower numbers appear first
-- **Store ID** — 0 for All Store Views
-- **Meta Title / Meta Description** — SEO fields for the detail page
+- **Title / Position** - job title (optional)
+- **Company** - company name (optional)
+- **Customer Image** - photo path (optional)
+- **Rating** - 1 to 5 stars
+- **Title** (required) - headline for the testimonial
+- **Content** (required) - full testimonial text
+- **Short Content** - excerpt shown on listing cards
+- **URL Key** - auto-generated from title if left blank
+- **Status** - Pending / Approved / Rejected
+- **Is Featured** - featured testimonials can be filtered in the widget
+- **Sort Order** - lower numbers appear first
+- **Store ID** - 0 for All Store Views
+- **Meta Title / Meta Description** - SEO fields for the detail page
 
 ### Statuses
 
@@ -104,11 +104,11 @@ Navigate to **Panth Infotech > Testimonials > Manage Categories**.
 Categories let you group testimonials. Each category has:
 
 - **Name** (required)
-- **URL Key** — auto-generated from name if blank
-- **Description** — optional; used as the meta description for the category page
-- **Is Active** — only active categories appear on the frontend
-- **Sort Order** — controls display order of category pills
-- **Store ID** — 0 for All Store Views
+- **URL Key** - auto-generated from name if blank
+- **Description** - optional; used as the meta description for the category page
+- **Is Active** - only active categories appear on the frontend
+- **Sort Order** - controls display order of category pills
+- **Store ID** - 0 for All Store Views
 
 ---
 

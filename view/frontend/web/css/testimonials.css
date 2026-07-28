@@ -1,5 +1,5 @@
 /**
- * Panth Testimonials — Hyva CSS
+ * Panth Testimonials - Hyva CSS
  * Loaded via default_hyva.xml
  * Uses CSS custom properties for theming (from theme-config.json)
  */
@@ -152,7 +152,7 @@
 }
 
 /* =========================================================
-   View Page — Enhanced
+   View Page - Enhanced
    ========================================================= */
 .pt-view .pt-view-card {
     background: var(--testimonials-card-bg);

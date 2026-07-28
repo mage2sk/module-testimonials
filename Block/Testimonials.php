@@ -125,7 +125,7 @@ class Testimonials extends Template
 
         $category = $this->getCurrentCategory();
         if ($category && $category->getName()) {
-            return sprintf('%s — %s', $category->getName(), $base);
+            return sprintf('%s - %s', $category->getName(), $base);
         }
 
         $page = (int) $this->getRequest()->getParam('p', 1);
@@ -133,7 +133,7 @@ class Testimonials extends Template
             $page = 1;
         }
         if ($page > 1) {
-            return sprintf('%s — %s %d', $base, (string) __('Page'), $page);
+            return sprintf('%s - %s %d', $base, (string) __('Page'), $page);
         }
 
         return $base;
