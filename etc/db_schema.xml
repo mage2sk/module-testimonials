@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+
+    <!-- Testimonial Categories -->
+    <table name="panth_testimonial_category" resource="default" engine="innodb" comment="Panth Testimonial Categories">
+        <column xsi:type="int" name="category_id" unsigned="true" nullable="false" identity="true" comment="Category ID"/>
+        <column xsi:type="varchar" name="name" nullable="false" length="255" comment="Category Name"/>
+        <column xsi:type="varchar" name="url_key" nullable="false" length="255" comment="URL Key"/>
+        <column xsi:type="text" name="description" nullable="true" comment="Description"/>
+        <column xsi:type="smallint" name="is_active" unsigned="true" nullable="false" default="1" comment="Is Active"/>
+        <column xsi:type="int" name="sort_order" unsigned="true" nullable="false" default="0" comment="Sort Order"/>
+        <column xsi:type="smallint" name="store_id" unsigned="true" nullable="false" default="0" comment="Store ID"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY"><column name="category_id"/></constraint>
+        <index referenceId="PANTH_TESTIMONIAL_CATEGORY_URL_KEY" indexType="btree"><column name="url_key"/></index>
+        <index referenceId="PANTH_TESTIMONIAL_CATEGORY_IS_ACTIVE" indexType="btree"><column name="is_active"/></index>
+    </table>
+
+    <!-- Testimonials -->
+    <table name="panth_testimonial" resource="default" engine="innodb" comment="Panth Testimonials">
+        <column xsi:type="int" name="testimonial_id" unsigned="true" nullable="false" identity="true" comment="Testimonial ID"/>
+        <column xsi:type="int" name="category_id" unsigned="true" nullable="true" comment="Category ID"/>
+        <column xsi:type="varchar" name="customer_name" nullable="false" length="255" comment="Customer Name"/>
+        <column xsi:type="varchar" name="customer_email" nullable="true" length="255" comment="Customer Email"/>
+        <column xsi:type="varchar" name="customer_title" nullable="true" length="255" comment="Job Title"/>
+        <column xsi:type="varchar" name="customer_company" nullable="true" length="255" comment="Company"/>
+        <column xsi:type="varchar" name="customer_image" nullable="true" length="500" comment="Customer Photo Path"/>
+        <column xsi:type="smallint" name="rating" unsigned="true" nullable="false" default="5" comment="Star Rating 1-5"/>
+        <column xsi:type="varchar" name="title" nullable="false" length="500" comment="Testimonial Title"/>
+        <column xsi:type="text" name="content" nullable="false" comment="Full Content"/>
+        <column xsi:type="varchar" name="short_content" nullable="true" length="500" comment="Short Excerpt"/>
+        <column xsi:type="varchar" name="url_key" nullable="false" length="255" comment="URL Key"/>
+        <column xsi:type="smallint" name="status" unsigned="true" nullable="false" default="0" comment="Status: 0=Pending 1=Approved 2=Rejected"/>
+        <column xsi:type="smallint" name="is_featured" unsigned="true" nullable="false" default="0" comment="Featured"/>
+        <column xsi:type="int" name="sort_order" unsigned="true" nullable="false" default="0" comment="Sort Order"/>
+        <column xsi:type="smallint" name="store_id" unsigned="true" nullable="false" default="0" comment="Store ID"/>
+        <column xsi:type="varchar" name="meta_title" nullable="true" length="255" comment="Meta Title"/>
+        <column xsi:type="text" name="meta_description" nullable="true" comment="Meta Description"/>
+        <column xsi:type="timestamp" name="created_at" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" nullable="false" default="CURRENT_TIMESTAMP" on_update="true" comment="Updated At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY"><column name="testimonial_id"/></constraint>
+        <index referenceId="PANTH_TESTIMONIAL_URL_KEY" indexType="btree"><column name="url_key"/></index>
+        <index referenceId="PANTH_TESTIMONIAL_STATUS" indexType="btree"><column name="status"/></index>
+        <index referenceId="PANTH_TESTIMONIAL_CATEGORY_ID" indexType="btree"><column name="category_id"/></index>
+        <index referenceId="PANTH_TESTIMONIAL_IS_FEATURED" indexType="btree"><column name="is_featured"/></index>
+        <index referenceId="PANTH_TESTIMONIAL_SORT_ORDER" indexType="btree"><column name="sort_order"/></index>
+    </table>
+</schema>

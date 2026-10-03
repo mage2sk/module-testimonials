@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <remove src="Panth_Core::css/swiper-bundle.min.css"/>
+        <remove src="Panth_Core::js/swiper-bundle.min.js"/>
+        <css src="Panth_Testimonials::css/testimonials.css"/>
+    </head>
+    <body>
+        <!-- Override testimonials slider template for Hyva -->
+        <referenceBlock name="homepage.testimonials.slider"
+                        template="Panth_Testimonials::hyva/widget/slider.phtml"/>
+    </body>
+</page>

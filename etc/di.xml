@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <!-- Grid Collections for UI Component Listings - real classes with explicit _idFieldName -->
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="panth_testimonials_listing_data_source" xsi:type="string">Panth\Testimonials\Model\ResourceModel\Testimonial\Grid\Collection</item>
+                <item name="panth_testimonials_category_listing_data_source" xsi:type="string">Panth\Testimonials\Model\ResourceModel\Category\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <virtualType name="Panth\Testimonials\Ui\TestimonialGridFilterPool" type="Magento\Framework\View\Element\UiComponent\DataProvider\FilterPool">
+        <arguments>
+            <argument name="appliers" xsi:type="array">
+                <item name="regular" xsi:type="object">Magento\Framework\View\Element\UiComponent\DataProvider\RegularFilter</item>
+                <item name="fulltext" xsi:type="object">Panth\Testimonials\Ui\Component\Listing\LikeFulltextFilter</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Panth\Testimonials\Ui\TestimonialGridReporting" type="Magento\Framework\View\Element\UiComponent\DataProvider\Reporting">
+        <arguments>
+            <argument name="filterPool" xsi:type="object">Panth\Testimonials\Ui\TestimonialGridFilterPool</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Panth\Testimonials\Ui\TestimonialGridDataProvider" type="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider">
+        <arguments>
+            <argument name="reporting" xsi:type="object">Panth\Testimonials\Ui\TestimonialGridReporting</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="Panth\Testimonials\Ui\CategoryGridFulltextFilter" type="Panth\Testimonials\Ui\Component\Listing\LikeFulltextFilter">
+        <arguments>
+            <argument name="columns" xsi:type="array">
+                <item name="name" xsi:type="string">main_table.name</item>
+                <item name="url_key" xsi:type="string">main_table.url_key</item>
+                <item name="description" xsi:type="string">main_table.description</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Panth\Testimonials\Ui\CategoryGridFilterPool" type="Magento\Framework\View\Element\UiComponent\DataProvider\FilterPool">
+        <arguments>
+            <argument name="appliers" xsi:type="array">
+                <item name="regular" xsi:type="object">Magento\Framework\View\Element\UiComponent\DataProvider\RegularFilter</item>
+                <item name="fulltext" xsi:type="object">Panth\Testimonials\Ui\CategoryGridFulltextFilter</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Panth\Testimonials\Ui\CategoryGridReporting" type="Magento\Framework\View\Element\UiComponent\DataProvider\Reporting">
+        <arguments>
+            <argument name="filterPool" xsi:type="object">Panth\Testimonials\Ui\CategoryGridFilterPool</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Panth\Testimonials\Ui\CategoryGridDataProvider" type="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider">
+        <arguments>
+            <argument name="reporting" xsi:type="object">Panth\Testimonials\Ui\CategoryGridReporting</argument>
+        </arguments>
+    </virtualType>
+</config>

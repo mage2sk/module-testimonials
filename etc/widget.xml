@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<widgets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Widget:etc/widget.xsd">
+
+    <widget id="panth_testimonial_slider"
+            class="Panth\Testimonials\Block\Widget\TestimonialSlider">
+        <label translate="true">Panth Testimonial Slider</label>
+        <description translate="true">Displays a slider of customer testimonials</description>
+        <parameters>
+            <parameter name="title" xsi:type="text" visible="true" sort_order="10">
+                <label translate="true">Widget Title</label>
+            </parameter>
+            <parameter name="category_id" xsi:type="select" visible="true" sort_order="20"
+                       source_model="Panth\Testimonials\Model\Config\Source\CategoryList">
+                <label translate="true">Category</label>
+                <description translate="true">Filter testimonials by category. Leave empty for all.</description>
+            </parameter>
+            <parameter name="count" xsi:type="text" visible="true" sort_order="30">
+                <label translate="true">Number of Testimonials</label>
+                <value>8</value>
+            </parameter>
+            <parameter name="featured_only" xsi:type="select" visible="true" sort_order="40">
+                <label translate="true">Featured Only</label>
+                <options>
+                    <option name="no" value="0" selected="true"><label translate="true">No</label></option>
+                    <option name="yes" value="1"><label translate="true">Yes</label></option>
+                </options>
+            </parameter>
+            <parameter name="show_rating" xsi:type="select" visible="true" sort_order="50">
+                <label translate="true">Show Rating</label>
+                <options>
+                    <option name="yes" value="1" selected="true"><label translate="true">Yes</label></option>
+                    <option name="no" value="0"><label translate="true">No</label></option>
+                </options>
+            </parameter>
+            <parameter name="show_company" xsi:type="select" visible="true" sort_order="60">
+                <label translate="true">Show Company</label>
+                <options>
+                    <option name="yes" value="1" selected="true"><label translate="true">Yes</label></option>
+                    <option name="no" value="0"><label translate="true">No</label></option>
+                </options>
+            </parameter>
+            <parameter name="show_image" xsi:type="select" visible="true" sort_order="70">
+                <label translate="true">Show Customer Image</label>
+                <options>
+                    <option name="yes" value="1" selected="true"><label translate="true">Yes</label></option>
+                    <option name="no" value="0"><label translate="true">No</label></option>
+                </options>
+            </parameter>
+            <parameter name="autoplay" xsi:type="select" visible="true" sort_order="80">
+                <label translate="true">Autoplay</label>
+                <options>
+                    <option name="yes" value="1" selected="true"><label translate="true">Yes</label></option>
+                    <option name="no" value="0"><label translate="true">No</label></option>
+                </options>
+            </parameter>
+            <parameter name="autoplay_interval" xsi:type="text" visible="true" sort_order="90">
+                <label translate="true">Autoplay Interval (ms)</label>
+                <value>5000</value>
+            </parameter>
+        </parameters>
+    </widget>
+</widgets>
