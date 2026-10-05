@@ -1,0 +1,11 @@
+{
+  "testimonials": {
+    "primary": "#0D9488",
+    "star": "#EAB308",
+    "card-bg": "#FFFFFF",
+    "card-border": "#E5E7EB",
+    "text": "#171717",
+    "text-secondary": "#525252",
+    "quote-bg": "#F0FDFA"
+  }
+}
